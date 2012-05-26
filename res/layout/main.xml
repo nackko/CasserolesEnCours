@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+    >
+	<LinearLayout
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:padding="10dip"
+		android:orientation="vertical" >
+	
+    	<LinearLayout 
+		    android:id="@+id/auth_layout" 
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:orientation="vertical"
+			android:visibility="gone"
+    	    >
+			
+    	    <EditText
+    	        android:id="@+id/uid"
+    	        android:layout_width="fill_parent"
+    	        android:layout_height="wrap_content"
+    	        android:hint="copy your uid"
+    	        />
+    	    <Button 
+    	        android:layout_width="fill_parent"
+    	        android:layout_height="wrap_content"
+    	        android:text="authenticate"
+    	        android:onClick="onAuthenClick"
+    	        />
+
+    	    <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:text="====== OR ====="
+    	        />
+    	   
+    	   <Button 
+    	        android:layout_width="fill_parent"
+    	        android:layout_height="wrap_content"
+    	        android:text="click to register a new user"
+    	        android:onClick="onRegisterClick"
+    	        />
+    	    	    	    
+    	   	
+    	</LinearLayout>
+
+    	<ProgressBar 
+			android:id="@+android:id/progress_spin"
+			style="?android:attr/progressBarStyleSmall"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:visibility="gone"
+			android:paddingTop="5dip"/>
+    	    	
+    	<LinearLayout 
+    	    android:id="@+id/main_layout"
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:orientation="vertical"
+    	    android:visibility="gone"
+    	    >
+
+   	        <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:text="[UID]:"
+   	        />
+    	    	   
+    	    <TextView 
+    	        	android:id="@+id/account"
+    	        	android:layout_width="fill_parent"
+    	        	android:layout_height="wrap_content"
+    	        	android:textColor="@color/text_orange"
+    	        	android:textStyle="bold"
+	    	        android:paddingLeft="10dip"
+    	        />
+
+    	     <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:text="[Service]:"/>
+    	   	
+	    	    <TextView 
+	    	        android:id="@+id/service_status"
+	    	        android:layout_width="wrap_content"
+	    	        android:layout_height="wrap_content"
+	    	        android:paddingLeft="10dip"
+	    	        />
+	    	    
+				<ToggleButton
+				    android:id="@+id/toggle"
+				    android:layout_height="wrap_content"
+				    android:layout_width="wrap_content"
+				    android:textOn="Turn Service Off"
+				    android:textOff="Turn Service On"
+				    android:checked="false"
+					android:onClick="onServiceClick"
+	    	        android:paddingLeft="10dip"/>
+				
+				<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="wrap_content">
+								
+					<ToggleButton
+					    android:id="@+id/toggleAntiEmeute"
+					    android:layout_height="wrap_content"
+					    android:layout_width="wrap_content"
+					    android:textOn="End AntiEmeute"
+					    android:textOff="Start AntiEmeute"
+					    android:checked="false"
+						android:onClick="onAntiEmeuteClick"
+		    	        android:paddingLeft="10dip"/>
+					<ToggleButton
+					    android:id="@+id/toggleManif"
+					    android:layout_height="wrap_content"
+					    android:layout_width="wrap_content"
+					    android:textOn="End Manif"
+					    android:textOff="Start Manif"
+					    android:checked="false"
+						android:onClick="onManifClick"
+						android:layout_toRightOf="@id/toggleAntiEmeute"
+						
+		    	        android:paddingLeft="10dip"/>
+					<ToggleButton
+					    android:id="@+id/toggleNEW"
+					    android:layout_height="wrap_content"
+					    android:layout_width="wrap_content"
+					    android:textOn="End NEW"
+					    android:textOff="Start NEW"
+					    android:checked="false"
+						android:onClick="onNEWClick"
+						android:layout_toRightOf="@id/toggleManif"
+						android:paddingLeft="10dip"/>
+						
+						
+		    	        
+					
+				
+				</RelativeLayout>
+				<RelativeLayout android:id="@+id/RelativeLayout03" android:layout_width="fill_parent" android:layout_height="wrap_content">
+				<Button
+					    android:id="@+id/spotFusion"
+					    android:layout_height="wrap_content"
+					    android:layout_width="wrap_content"
+					    android:text="Fusion ! :)"
+					    android:onClick="onSpotFusionClick"
+		    	        android:paddingLeft="10dip"/>
+						<Button
+					    android:id="@+id/spotReduction"
+					    android:layout_height="wrap_content"
+					    android:layout_width="wrap_content"
+					    android:text="Reduction !"
+					    android:onClick="onSpotReductionClick"
+					    android:layout_toRightOf="@id/spotFusion"
+		    	        android:paddingLeft="10dip"/>
+						<Button
+					    android:id="@+id/spotDispersion"
+					    android:layout_height="wrap_content"
+					    android:layout_width="wrap_content"
+					    android:text="dispersion"
+					    android:onClick="onSpotDispersionClick"
+					    android:layout_toRightOf="@id/spotReduction"
+		    	        android:paddingLeft="10dip"/>
+				</RelativeLayout>
+				<RelativeLayout android:id="@+id/RelativeLayout04" android:layout_width="fill_parent" android:layout_height="wrap_content">
+				    <EditText
+				        android:id="@+id/statusText"
+				        android:layout_height="wrap_content"
+					    android:layout_width="match_parent"
+					    android:text="Unused"
+					    android:enabled="false"
+					    android:paddingLeft="10dip"/>
+				    </RelativeLayout>
+				
+    	    
+    	     <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:text="[Motion State]:"/>
+    	   	
+    	   	<TextView 
+   	        	android:id="@+id/motion_state"
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:text="unknown"
+   	        	android:paddingLeft="10dip"
+    	      />
+
+    	   	 <TextView 
+   	        	android:id="@+id/user_state"
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:text=""
+   	        	android:paddingLeft="10dip"
+    	      />
+    	   	 
+    	   	 
+    	   	 
+    	   	 <RelativeLayout android:id="@+id/FrequencyGroupLayout" android:layout_width="fill_parent" android:layout_height="wrap_content">
+    	   	     
+    	   	     <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	
+   	        	android:textStyle="bold"
+   	        	android:id="@+id/pollFrequencyText"
+   	        	/>
+    	   	     <!-- android:text="{N/A when stationary}:" -->
+    	   	     <!-- android:textColor="@color/text_violet" -->
+				
+    	   	     <RadioGroup
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    
+                    android:id="@+id/pollFrequencyRadioGroup"
+                    android:layout_below="@id/pollFrequencyText"
+                    
+                    android:orientation="horizontal">
+                    <!-- android:layout_toRightOf="@id/user_state" -->
+                    
+
+                <RadioButton android:id="@+id/frequency0"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"                             
+                             android:text="10m" />
+                    <!--android:layout_toRightOf="@id/TextViewHelmet"-->
+                    <!-- android:layout_below="@id/nameField" -->
+                <RadioButton android:id="@+id/frequency1"
+                    	     android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             
+                             android:text="5m" />
+                    <!--android:layout_toRightOf="@id/radioHelmet_yes"-->
+                    <!-- android:layout_below="@id/nameField" -->
+                    <RadioButton android:id="@+id/frequency2"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             
+                             android:text="3m" />
+                    <!-- android:layout_below="@id/nameField" -->
+                    <RadioButton android:id="@+id/frequency3"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             
+                             android:text="1m" />
+                    <!-- android:layout_below="@id/nameField" -->
+            </RadioGroup>
+				</RelativeLayout>    	   	
+    	    	</LinearLayout>
+	</LinearLayout>
+</ScrollView>
