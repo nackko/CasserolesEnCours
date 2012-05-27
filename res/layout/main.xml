@@ -135,6 +135,7 @@
 					    android:textOn="End NEW"
 					    android:textOff="Start NEW"
 					    android:checked="false"
+					    android:enabled="false"
 						android:onClick="onNEWClick"
 						android:layout_toRightOf="@id/toggleManif"
 						android:paddingLeft="10dip"/>

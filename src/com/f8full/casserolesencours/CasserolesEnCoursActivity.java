@@ -267,21 +267,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
             if (resultCode == RESULT_OK) {
                 //here I have authorization code
                 final String code = data.getStringExtra("authcode");
-//                mLocationPollThreadExecutor.scheduleAtFixedRate(new Runnable() {
-//                    public void run() {
-//                        try {
-//                            newData.put("DATE", DateFormat.getDateTimeInstance().format(new Date()));
-//                            newData.put("LOCATION", getLatLongPosition());
-//                        } catch (JSONException e) {
-//                            // TODO Auto-generated catch block
-//                            e.printStackTrace();
-//                        }
-//                        //Threaded : httpTransport is Thread safe, hence concurrent access to the web should be handled
-//                        writeToFusionTable(false, newData);
-//                    }
-//                }, 
-//                //60000, 60000, TimeUnit.MILLISECONDS);            
-//                10, 10, TimeUnit.MINUTES);
+
+                //This is not great, my thread pool is polluted
                 mLocationPollThreadExecutor.execute(new Runnable() {
                     public void run() {
                     	try {
@@ -385,26 +372,86 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
         }
     }
     
+    public void onManifClick(View view) {
+        boolean isChecked = ((ToggleButton)view).isChecked();
+        final String description;
+        if (isChecked)
+        {
+            description = "MANIF START";    		
+        } 
+        else 
+        {
+            description = "MANIF END";
+        }        
+
+        new Thread((new Runnable() {
+
+            public void run() {
+
+                //Threaded : httpTransport is Thread safe, hence concurrent access to the web should be handled
+                writeToFusionTable(true, description);
+
+            }
+        })).start();
+    }
+        
+        public void onAntiEmeuteClick(View view) {
+            boolean isChecked = ((ToggleButton)view).isChecked();
+            final String description;
+            if (isChecked)
+            {
+                description = "Anti Emeute Start";    		
+            } 
+            else 
+            {
+                description = "Anti Emeute END";
+            }        
+
+            new Thread((new Runnable() {
+
+                public void run() {
+
+                    //Threaded : httpTransport is Thread safe, hence concurrent access to the web should be handled
+                    writeToFusionTable(true, description);
+
+                }
+            })).start();         
+    }
+    
     public void onSpotDispersionClick(View view) {
-    	//boolean isChecked = ((ToggleButton)view).isChecked();
+    	
     	final String description = "Ordre de dispersion ! :S";
-    	//if (isChecked)
-    	//{
-    	//description = "MANIF START";            
-    	//} 
-    	//else 
-    	//{
-    	//description = "MANIF END";
-    	//}
+    	
+    	new Thread((new Runnable() {
 
-    	//Not threaded : file write access don't play well in multithreaded environments
-    	/*try {
-    		writeToSD_CSV(true, description);
-    	} catch (IOException e) {
-    		toastError("Can't write log to SD Card, IOException");
-    		//e.printStackTrace();
-    	}*/
+    		public void run() {
 
+    			//Threaded : httpTransport is Thread safe, hence concurrent access to the web should be handled
+    			writeToFusionTable(true, description);
+
+    		}
+    	})).start();
+    }
+    
+    public void onSpotFusionClick(View view) {
+        
+        final String description = "Fusion ! :)";
+
+        new Thread((new Runnable() {
+
+            public void run() {
+
+                //Threaded : httpTransport is Thread safe, hence concurrent access to the web should be handled
+                writeToFusionTable(true, description);
+
+            }
+        })).start();
+    }
+    
+    public void onSpotReductionClick(View view) {
+    	
+    	final String description = "reduction ! :s";
+    	
     	new Thread((new Runnable() {
 
     		public void run() {
