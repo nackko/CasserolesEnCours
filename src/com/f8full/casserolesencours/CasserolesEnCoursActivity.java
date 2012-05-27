@@ -266,27 +266,45 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
         case REQUEST_OAUTH2_AUTHENTICATE:
             if (resultCode == RESULT_OK) {
                 //here I have authorization code
-                String code = data.getStringExtra("authcode");
+                final String code = data.getStringExtra("authcode");
+//                mLocationPollThreadExecutor.scheduleAtFixedRate(new Runnable() {
+//                    public void run() {
+//                        try {
+//                            newData.put("DATE", DateFormat.getDateTimeInstance().format(new Date()));
+//                            newData.put("LOCATION", getLatLongPosition());
+//                        } catch (JSONException e) {
+//                            // TODO Auto-generated catch block
+//                            e.printStackTrace();
+//                        }
+//                        //Threaded : httpTransport is Thread safe, hence concurrent access to the web should be handled
+//                        writeToFusionTable(false, newData);
+//                    }
+//                }, 
+//                //60000, 60000, TimeUnit.MILLISECONDS);            
+//                10, 10, TimeUnit.MINUTES);
+                mLocationPollThreadExecutor.execute(new Runnable() {
+                    public void run() {
+                    	try {
+                            TokenResponse accessTokenResponse = new AuthorizationCodeTokenRequest(new NetHttpTransport(),
+                                    new JacksonFactory(),
+                                    new GenericUrl("https://accounts.google.com/o/oauth2/token"),
+                                    code)
+                            .setRedirectUri(OAuth2ClientCredentials.REDIRECT_URI)
+                            .setScopes(OAuth2ClientCredentials.SCOPE)
+                            .setClientAuthentication(new ClientParametersAuthentication(OAuth2ClientCredentials.CLIENT_ID, OAuth2ClientCredentials.CLIENT_SECRET))
+                            .execute();						
 
-                try {
-                    TokenResponse accessTokenResponse = new AuthorizationCodeTokenRequest(new NetHttpTransport(),
-                            new JacksonFactory(),
-                            new GenericUrl("https://accounts.google.com/o/oauth2/token"),
-                            code)
-                    .setRedirectUri(OAuth2ClientCredentials.REDIRECT_URI)
-                    .setScopes(OAuth2ClientCredentials.SCOPE)
-                    .setClientAuthentication(new ClientParametersAuthentication(OAuth2ClientCredentials.CLIENT_ID, OAuth2ClientCredentials.CLIENT_SECRET))
-                    .execute();						
+
+                            setRefreshToken(accessTokenResponse.getRefreshToken());
+                            mGOOGCredential.setFromTokenResponse(accessTokenResponse);						
 
 
-                    setRefreshToken(accessTokenResponse.getRefreshToken());
-                    mGOOGCredential.setFromTokenResponse(accessTokenResponse);						
-
-
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });                
 
 
             } else {
@@ -662,7 +680,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
         for(int i=0; i<dataList.size(); ++i)
         {
         	//Corresponds to following table https://www.google.com/fusiontables/DataSource?snapid=S512254UC6Z
-            SqlQuery += "INSERT INTO 1WsnChsbo7u8WA1xVqWGj2BjsqTdOIqbAdZ29IIY (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
+            SqlQuery += "INSERT INTO 1kOj-qW2ymCjwZ40HAFZ0HWwobZgCbEyOQVLqB5Q (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
             //SqlQuery += "INSERT INTO 16ehK-lBkc8e_FTsKkizVteghlo6XSiHpLwBTSfo (Date, Location, Manual, Description, IsStationary, IsOnCommute) VALUES ('"//fv
             //SqlQuery += "INSERT INTO 1Ud9BqVMCWWDVmSGHUFGgmAnmxqhXiXTt_gllWxI (Date, Location, Manual, Description, IsStationary, IsOnCommute) VALUES ('"//sg
                     + dataList.get(i).getString("DATE")
