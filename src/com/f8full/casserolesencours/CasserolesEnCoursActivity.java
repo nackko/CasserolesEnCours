@@ -468,7 +468,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
      */
     public void onMotionStateChanged(MotionState oldState, MotionState newState) {
         
-        if(newState != MotionState.BIGMOVEMENT && newState != MotionState.MICROMOVEMENT)
+        if( oldState == MotionState.STATIONARY || (newState != MotionState.BIGMOVEMENT && newState != MotionState.MICROMOVEMENT) )
         {
             //LOG IN TABLE
             final String motionStateSwitch = oldState.name() + "=>" + newState.name();
@@ -726,8 +726,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
         for(int i=0; i<dataList.size(); ++i)
         {
+        	SqlQuery += "INSERT INTO 1ZfJssEk4h9yiWuLXh-IqCP3pzRm9jnV2aCuBQG8 (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
+        	
+
         	//Corresponds to following table https://www.google.com/fusiontables/DataSource?snapid=S512254UC6Z
-            SqlQuery += "INSERT INTO 1kOj-qW2ymCjwZ40HAFZ0HWwobZgCbEyOQVLqB5Q (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
+            //SqlQuery += "INSERT INTO 1kOj-qW2ymCjwZ40HAFZ0HWwobZgCbEyOQVLqB5Q (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
             //SqlQuery += "INSERT INTO 16ehK-lBkc8e_FTsKkizVteghlo6XSiHpLwBTSfo (Date, Location, Manual, Description, IsStationary, IsOnCommute) VALUES ('"//fv
             //SqlQuery += "INSERT INTO 1Ud9BqVMCWWDVmSGHUFGgmAnmxqhXiXTt_gllWxI (Date, Location, Manual, Description, IsStationary, IsOnCommute) VALUES ('"//sg
                     + dataList.get(i).getString("DATE")
