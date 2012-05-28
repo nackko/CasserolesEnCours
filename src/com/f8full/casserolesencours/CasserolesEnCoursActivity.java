@@ -380,7 +380,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
     public void onViewerModeClick(View view)
     {
     	startActivity(new Intent(this, CasserolesEnCoursViewerActivity.class));
-    	//startActivity(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);    	
+    	//startActivity(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
+    	
     }
     
     /**
