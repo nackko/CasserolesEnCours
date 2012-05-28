@@ -40,6 +40,7 @@ import java.io.InputStreamReader;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -110,6 +111,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	private static final int REQUEST_OAUTH2_AUTHENTICATE = 0;
 	private static final String SERVICE_URL = "https://www.google.com/fusiontables/api/query/";
     ///////////////////////////////////////////////////////////////////////////////////////
+	
+	private static final String PREF_TABLE_ENCID = "tableEncID";
+	
+	public String mFusionTableEncID;
+	
 	private ALMotionManager mMotionManager;
 	private boolean mIsStationary=true;
 	private ScheduledThreadPoolExecutor mLocationPollThreadExecutor= new ScheduledThreadPoolExecutor(20);
@@ -183,6 +189,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
         mPrefs = getSharedPreferences(PREF_NAME,MODE_PRIVATE);
         
         mAloharUid = mPrefs.getString(PREF_KEY, null);
+        mFusionTableEncID = mPrefs.getString(PREF_TABLE_ENCID, null);
         
         if (mAloharUid != null) {
             mUIDView.setText(String.valueOf(mAloharUid));
@@ -190,6 +197,16 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
         } else {
         	mAloharAuthLayout.setVisibility(View.VISIBLE);
         }
+        
+        if (mFusionTableEncID != null) {
+        	
+        	((TextView)findViewById(R.id.tableInfo)).setText(mFusionTableEncID);            
+        	
+        } else {
+        	((TextView)findViewById(R.id.tableInfo)).setText("Tap create");
+        }
+        
+        
         
         mGOOGCredential = new GoogleCredential.Builder().setTransport(mNetHttpTransport)
                 .setJsonFactory(mJaksonJSONFactory)//.build();
@@ -305,6 +322,12 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
     void setRefreshToken(String refreshToken) {
         SharedPreferences.Editor editor = mPrefs.edit();
         editor.putString(PREF_REFRESH_TOKEN, refreshToken);
+        editor.commit();
+    }
+    
+    void setTableEncID(String tableEncID) {
+        SharedPreferences.Editor editor = mPrefs.edit();
+        editor.putString(PREF_TABLE_ENCID, tableEncID);
         editor.commit();
     }
     
@@ -462,6 +485,123 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
     		}
     	})).start();
     }
+    
+    public void onClearTableClick(View view) {
+    	
+    	TextView textView = (TextView) findViewById(R.id.tableInfo);
+       	textView.setText("Tap create");
+       	
+       	mFusionTableEncID = null;
+       	
+       	SharedPreferences.Editor editor2 = mPrefs.edit();
+        editor2.remove(PREF_TABLE_ENCID);
+        editor2.commit();
+    	
+    }
+    
+    public void onCreateTableClick(View view) {
+    	
+    	//Create table with required columns and retrieve it's encID
+        
+        //final String description = "Fusion ! :)";
+
+        new Thread((new Runnable() {
+
+            public void run() {
+            	try {
+                    sendCreateQueryToFusionTable();
+
+                } 
+            	catch (HttpResponseException e) 
+                {
+                    if (e.getStatusCode() == 401) 
+                    {
+                        mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
+                        mGOOGCredential.setAccessToken(null);
+
+                        SharedPreferences.Editor editor2 = mPrefs.edit();
+                        editor2.remove(PREF_REFRESH_TOKEN);
+                        editor2.commit();
+
+
+                        toastMessage("OAuth login required, redirecting...");
+                        
+                        //This last Constant is weird
+                        startActivityForResult(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
+
+                    }
+
+                } catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        })).start();
+    }
+        
+        private void sendCreateQueryToFusionTable() throws JSONException, HttpResponseException, IOException
+        {
+        	String today = DateFormat.getDateInstance().format(new Date());
+            String todayFileFormatted = today.replace(" ", "_").replace(",", "_");
+            
+        	
+        	String SqlQuery = "CREATE TABLE CasserolesEnCours" + todayFileFormatted + " (Date:DATETIME, Location:LOCATION, Manual:STRING, Description:STRING, IsStationary:STRING)";
+        	
+        	String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
+        	
+        	GoogleUrl GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery + "&encid=true");
+        	
+            try {
+
+                HttpRequest request = mGOOGClient.getRequestFactory().buildPostRequest(GUrl, null);
+                HttpHeaders headers = new HttpHeaders();
+
+                headers.setContentLength("0");//Required so that Fusion Table API considers request
+                request.setHeaders(headers);
+
+                HttpResponse response = request.execute();
+
+                if(response.getStatusCode() == 200)
+                {
+                	String tableName="NONAME";
+                	
+                   InputStreamReader inputStreamReader = new InputStreamReader(response.getContent());
+               	   BufferedReader bufferedStreamReader = new BufferedReader(inputStreamReader);
+               	   CSVReader reader = new CSVReader(bufferedStreamReader);
+               	   // The first line is the column names, and the remaining lines are the rows.
+               	   List<String[]> csvLines = reader.readAll();
+               	   List<String> columns = Arrays.asList(csvLines.get(0));
+               	   List<String[]> rows = csvLines.subList(1, csvLines.size());
+               	   
+               	   //TextView textView = (TextView) findViewById(R.id.nameField);
+               	   mFusionTableEncID = rows.get(0)[0];
+               	   setTableEncID(mFusionTableEncID);
+               	   
+               	   //TODO : add request to retrieve NAME of table instead of ID
+               	   
+               	mMainHandler.post(new Runnable() {
+
+                    public void run() {
+                    	TextView textView = (TextView) findViewById(R.id.tableInfo);
+                       	textView.setText(mFusionTableEncID);
+                    }
+                });	   
+                	
+                    toastMessage("Fusion table create request 200 OK :)--" + mFusionTableEncID);//dataList.get(0).getString("DESC"));
+                }
+
+            } catch(HttpResponseException e)
+            {
+                throw e;                                 
+
+            } catch (IOException e) {
+
+                throw e;
+            }
+        }
 
 	/* (non-Javadoc)
      * @see com.alohar.user.callback.ALMotionListener#onMotionStateChanged(com.alohar.user.content.data.MotionState, com.alohar.user.content.data.MotionState)
@@ -726,7 +866,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
         for(int i=0; i<dataList.size(); ++i)
         {
-        	SqlQuery += "INSERT INTO 1ZfJssEk4h9yiWuLXh-IqCP3pzRm9jnV2aCuBQG8 (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
+        	SqlQuery += "INSERT INTO " + mFusionTableEncID + " (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
         	
 
         	//Corresponds to following table https://www.google.com/fusiontables/DataSource?snapid=S512254UC6Z

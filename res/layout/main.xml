@@ -64,13 +64,47 @@
     	    android:orientation="vertical"
     	    android:visibility="gone"
     	    >
+    	   <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:text="[Table Info]:"
+   	        />
+    	   
+	    	   <TextView 
+	    	        	android:id="@+id/tableInfo"
+	    	        	android:layout_width="fill_parent"
+	    	        	android:layout_height="wrap_content"
+	    	        	android:textColor="@color/text_orange"
+	    	        	android:textStyle="bold"
+		    	        android:paddingLeft="10dip"
+	    	        />
+	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content">
+	    	   <Button
+						    android:id="@+id/clearTable"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:text="Clear"
+						    android:onClick="onClearTableClick"
+						    android:layout_toRightOf="@id/tableInfo"
+			    	        android:paddingLeft="10dip"/>
+	    	   <Button
+						    android:id="@+id/createTable"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:text="Create"
+						    android:onClick="onCreateTableClick"
+						    android:layout_toRightOf="@+id/clearTable"
+			    	        android:paddingLeft="10dip"/>
+    	   </RelativeLayout>
 
    	        <TextView 
    	        	android:layout_width="fill_parent"
    	        	android:layout_height="wrap_content"
    	        	android:textColor="@color/text_blue"
    	        	android:textStyle="bold"
-   	        	android:text="[UID]:"
+   	        	android:text="[Alohar UID]:"
    	        />
     	    	   
     	    <TextView 

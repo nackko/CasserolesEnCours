@@ -14,27 +14,24 @@ https://code.google.com/apis/console/
     //Account casserolesencours@gmail.com
     public static final String API_KEY = "47e49bd099908705ae5ec227de1bab7cdef20b45";
  
- - Create a new Google Fusion Table from provided TableTemplate.csv.
- Then grab Encrypted ID from File->About and copy it to
- private void pushDataToFusionTable(ArrayList<JSONObject> dataList) throws JSONException, HttpResponseException, IOException
- 
- Compile and run.
+Compile and run.
  
  Use Instructions :
  - On first launch, choose to register new user. It will create a new private dataset on Alohar cloud.
  It is important to note that no connection with device or device carrier will ever be made.
  At any point in time, you can register a new user by tapping menu->Exit 
  and then relaunch the app.
+ - Create and clear table buttons for fusion table. Note that clear doesn't remove it from your drive just yet.
  
- -You should then be able to use interface, try testing taping one button, but NOT the first Togle one just yet
+ - You should then be able to use interface, try testing taping dispersion
  
- If you activate the service by tapping first toogle, Alohar tech will start working, meaning your location will be tracked.
+ If you activate the service by tapping Turn service on toogle, Alohar tech will start working, meaning your location will be tracked.
  Just tap the same button again to end tracking.
  - If you start moving around while Alohar service is on, radio buttons will be automatically available and app will automatically record data at specified frequency
   
- -TextFild input is not used
+ - TextField input is not used
  
- -THE MENU BUTTON : flush flushes ALOHAR DATE from phone
+ - THE MENU BUTTON : flush flushes ALOHAR DATE from phone
  Flush SQL flushes error rows generated if something went wrong when logging. It's important to do it regularly.
  Exit exits alohar SDK.
  
