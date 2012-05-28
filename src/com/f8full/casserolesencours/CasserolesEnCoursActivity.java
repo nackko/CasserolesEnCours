@@ -381,27 +381,90 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
     
     public void onViewerModeClick(View view)
     {
-    	Location truc = new Location("DUMMY");
-    	truc.setLatitude(45.53458856418729);
-    	truc.setLongitude(-73.58274347947112);
+    	//excellent, just do a request to grab the locations and pass them around
+    	final String SqlQuery = "SELECT Date, Location, Description FROM " + mFusionTableEncID;
     	
-    	Location truc2 = new Location("DUMMY");
-    	truc2.setLatitude(45.51699834410101);
-    	truc2.setLongitude(-73.5677096620202);
-    	
-    	
-    	ArrayList<Location> locationList = new ArrayList<Location>();
-    	
-    	//GeoPoint point = new GeoPoint(45534588,-73582743);
-    	
-    	locationList.add(truc);
-    	locationList.add(truc2);
-    	
-    	Intent mapIntent = new Intent(this, CasserolesEnCoursViewerActivity.class);
-    	mapIntent.putParcelableArrayListExtra("locationList", locationList);
-    	startActivity(mapIntent);
-    	//startActivity(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
-    	
+    	new Thread((new Runnable() {
+
+            public void run() {
+            	try {
+            		                	
+                	String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
+                	
+                	GoogleUrl GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery + "&encid=true");
+                	
+                    
+
+                        HttpRequest request = mGOOGClient.getRequestFactory().buildGetRequest(GUrl);
+                        HttpHeaders headers = new HttpHeaders();
+
+                        headers.setContentLength("0");//Required so that Fusion Table API considers request
+                        request.setHeaders(headers);
+
+                        HttpResponse response = request.execute();
+
+                        if(response.getStatusCode() == 200)
+                        {
+                        	//Here I have my data
+                        	 InputStreamReader inputStreamReader = new InputStreamReader(response.getContent());
+                         	   BufferedReader bufferedStreamReader = new BufferedReader(inputStreamReader);
+                         	   CSVReader reader = new CSVReader(bufferedStreamReader);
+                         	   // The first line is the column names, and the remaining lines are the rows.
+                         	   List<String[]> csvLines = reader.readAll();
+                         	   
+                         	   List<String> columns = Arrays.asList(csvLines.get(0));
+                         	   List<String[]> rows = csvLines.subList(1, csvLines.size());
+                         	   
+                         	                            	   
+                         	  ArrayList<String> rowData = new ArrayList<String>();
+                         	  
+                         	  for(String[] row : rows)
+                         	  {
+                         		  String toAdd = "";
+                         		  for(String cell : row)
+                         		  {
+                         			  //No , in data, or things are gonna go horribly wrong here
+                         			  toAdd += cell + "|";
+                         		  }
+                         		  
+                         		  //I have this last pesky separator ,it will give me an empty String on the other side
+                         		  rowData.add(toAdd);
+                         	  }
+                         	  
+                         	 Intent mapIntent = new Intent(getApplicationContext(), CasserolesEnCoursViewerActivity.class);
+                         	mapIntent.putStringArrayListExtra("rowsData", rowData);
+                        	startActivity(mapIntent);
+                        	
+                        
+                        }
+                        
+
+                } 
+            	catch (HttpResponseException e) 
+                {
+                    if (e.getStatusCode() == 401) 
+                    {
+                        mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
+                        mGOOGCredential.setAccessToken(null);
+
+                        SharedPreferences.Editor editor2 = mPrefs.edit();
+                        editor2.remove(PREF_REFRESH_TOKEN);
+                        editor2.commit();
+
+
+                        toastMessage("OAuth login required, redirecting...");
+                        
+                        //This last Constant is weird
+                        startActivityForResult(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
+
+                    }
+
+                } catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        })).start();
     }
     
     /**
