@@ -22,39 +22,43 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int FrequencyGroupLayout=0x7f060016;
-        public static final int RelativeLayout01=0x7f06000a;
-        public static final int RelativeLayout010=0x7f060004;
-        public static final int RelativeLayout03=0x7f06000e;
-        public static final int RelativeLayout04=0x7f060012;
-        public static final int account=0x7f060007;
+        public static final int FrequencyGroupLayout=0x7f060017;
+        public static final int RelativeLayout01=0x7f06000b;
+        public static final int RelativeLayout010=0x7f060005;
+        public static final int RelativeLayout03=0x7f06000f;
+        public static final int RelativeLayout04=0x7f060013;
+        public static final int account=0x7f060008;
         public static final int auth_layout=0x7f060000;
-        public static final int clearTable=0x7f060005;
-        public static final int createTable=0x7f060006;
-        public static final int frequency0=0x7f060019;
-        public static final int frequency1=0x7f06001a;
-        public static final int frequency2=0x7f06001b;
-        public static final int frequency3=0x7f06001c;
+        public static final int clearTable=0x7f060006;
+        public static final int createTable=0x7f060007;
+        public static final int frequency0=0x7f06001a;
+        public static final int frequency1=0x7f06001b;
+        public static final int frequency2=0x7f06001c;
+        public static final int frequency3=0x7f06001d;
         public static final int main_layout=0x7f060002;
-        public static final int motion_state=0x7f060014;
-        public static final int pollFrequencyRadioGroup=0x7f060018;
-        public static final int pollFrequencyText=0x7f060017;
+        public static final int mapview=0x7f06001f;
+        public static final int motion_state=0x7f060015;
+        public static final int pollFrequencyRadioGroup=0x7f060019;
+        public static final int pollFrequencyText=0x7f060018;
         public static final int progress_spin=0x01010000;
-        public static final int service_status=0x7f060008;
-        public static final int spotDispersion=0x7f060011;
-        public static final int spotFusion=0x7f06000f;
-        public static final int spotReduction=0x7f060010;
-        public static final int statusText=0x7f060013;
-        public static final int tableInfo=0x7f060003;
-        public static final int toggle=0x7f060009;
-        public static final int toggleAntiEmeute=0x7f06000b;
-        public static final int toggleManif=0x7f06000c;
-        public static final int toggleNEW=0x7f06000d;
+        public static final int service_status=0x7f060009;
+        public static final int spotDispersion=0x7f060012;
+        public static final int spotFusion=0x7f060010;
+        public static final int spotReduction=0x7f060011;
+        public static final int statusText=0x7f060014;
+        public static final int tableInfo=0x7f060004;
+        public static final int toggle=0x7f06000a;
+        public static final int toggleAntiEmeute=0x7f06000c;
+        public static final int toggleManif=0x7f06000d;
+        public static final int toggleNEW=0x7f06000e;
         public static final int uid=0x7f060001;
-        public static final int user_state=0x7f060015;
+        public static final int user_state=0x7f060016;
+        public static final int viewerLayout=0x7f06001e;
+        public static final int viewerMode=0x7f060003;
     }
     public static final class layout {
         public static final int main=0x7f030000;
+        public static final int viewer=0x7f030001;
     }
     public static final class string {
         public static final int app_name=0x7f050000;

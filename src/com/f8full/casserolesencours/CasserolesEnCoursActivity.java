@@ -377,6 +377,12 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
         mProgress.setVisibility(View.VISIBLE);
     }
     
+    public void onViewerModeClick(View view)
+    {
+    	startActivity(new Intent(this, CasserolesEnCoursViewerActivity.class));
+    	//startActivity(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);    	
+    }
+    
     /**
      * On service click.
      *
