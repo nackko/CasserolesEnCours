@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="Casserolesencours : Casseroles are in town !" />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Casserolesencours</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/f8full/CasserolesEnCours">View on GitHub</a>
+
+          <h1 id="project_title">Casserolesencours</h1>
+          <h2 id="project_tagline">Casseroles are in town !</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/f8full/CasserolesEnCours/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/f8full/CasserolesEnCours/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p>This is ground base for citizen enabled strikes real time positioning update.
+This is free software, published under GNU license.</p>
+
+<p>It requires some manual setup to be used as of now</p>
+
+<ul>
+<li>Authorize Installed app (API not in LIST, click on button directly) in you Google API console 
+<a href="https://code.google.com/apis/console/">https://code.google.com/apis/console/</a>
+</li>
+<li>
+<p>Copy relevant data to org.livinglabmontreal.OAuth2ClientCredentials.java
+(.default file is a template)</p>
+
+<ul>
+<li>Note : Alohar technology uses account <a href="mailto:casserolesencours@gmail.com">casserolesencours@gmail.com</a>, you can register your own key if you want
+and input it in main activity
+public static final int APP_ID = 111; 
+////////////////////////////////////////////////////////////////////////////////////////
+//Account <a href="mailto:casserolesencours@gmail.com">casserolesencours@gmail.com</a>
+public static final String API_KEY = "47e49bd099908705ae5ec227de1bab7cdef20b45";</li>
+</ul>
+</li>
+</ul><p>Compile and run.</p>
+
+<p>Use Instructions :</p>
+
+<ul>
+<li>On first launch, choose to register new user. It will create a new private dataset on Alohar cloud.
+It is important to note that no connection with device or device carrier will ever be made.
+At any point in time, you can register a new user by tapping menu-&gt;Exit 
+and then relaunch the app.</li>
+<li><p>Create and clear table buttons for fusion table. Note that clear doesn't remove it from your drive just yet.</p></li>
+<li>
+<p>You should then be able to use interface, try testing taping dispersion</p>
+
+<p>If you activate the service by tapping Turn service on toogle, Alohar tech will start working, meaning your location will be tracked.
+Just tap the same button again to end tracking.</p>
+</li>
+<li><p>If you start moving around while Alohar service is on, radio buttons will be automatically available and app will automatically record data at specified frequency</p></li>
+<li><p>TextField input is not used</p></li>
+<li><p>THE MENU BUTTON : flush flushes ALOHAR DATE from phone
+Flush SQL flushes error rows generated if something went wrong when logging. It's important to do it regularly.
+Exit exits alohar SDK.</p></li>
+</ul>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Casserolesencours maintained by <a href="https://github.com/f8full">f8full</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
