@@ -51,6 +51,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -75,6 +76,7 @@ import com.alohar.user.content.data.ALEvents;
 import com.alohar.user.content.data.MotionState;
 //import com.alohar.user.content.data.UserStay;
 import com.f8full.casserolesencours.R;
+import com.google.android.maps.GeoPoint;
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
 import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
 import com.google.api.client.auth.oauth2.TokenResponse;
@@ -379,7 +381,25 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
     
     public void onViewerModeClick(View view)
     {
-    	startActivity(new Intent(this, CasserolesEnCoursViewerActivity.class));
+    	Location truc = new Location("DUMMY");
+    	truc.setLatitude(45.53458856418729);
+    	truc.setLongitude(-73.58274347947112);
+    	
+    	Location truc2 = new Location("DUMMY");
+    	truc2.setLatitude(45.51699834410101);
+    	truc2.setLongitude(-73.5677096620202);
+    	
+    	
+    	ArrayList<Location> locationList = new ArrayList<Location>();
+    	
+    	//GeoPoint point = new GeoPoint(45534588,-73582743);
+    	
+    	locationList.add(truc);
+    	locationList.add(truc2);
+    	
+    	Intent mapIntent = new Intent(this, CasserolesEnCoursViewerActivity.class);
+    	mapIntent.putParcelableArrayListExtra("locationList", locationList);
+    	startActivity(mapIntent);
     	//startActivity(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
     	
     }

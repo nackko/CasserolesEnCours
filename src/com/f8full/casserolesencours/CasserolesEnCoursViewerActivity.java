@@ -1,5 +1,7 @@
 package com.f8full.casserolesencours;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.google.android.maps.GeoPoint;
@@ -11,6 +13,7 @@ import com.google.android.maps.OverlayItem;
 import com.f8full.casserolesencours.R;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
+import android.location.Location;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
@@ -35,13 +38,23 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
         
         mapOverlays = mapView.getOverlays();
         drawable = this.getResources().getDrawable(R.drawable.ic_launcher);
+        
+        ArrayList<Location> locationsExtra = getIntent().getParcelableArrayListExtra("locationList");
+        
         itemizedoverlay = new CasserolesItemizedOverlay(drawable);
         
-        GeoPoint point = new GeoPoint(45534588,-73582743);
-        OverlayItem overlayitem = new OverlayItem(point, "", "");
         
-        itemizedoverlay.addOverlay(overlayitem);
+        
+        for (Location loc : locationsExtra)
+        {
+        	GeoPoint point = new GeoPoint((int)(loc.getLatitude()*1e6),(int)(loc.getLongitude()*1e6));
+        	OverlayItem overlayitem = new OverlayItem(point, "", "");      	
+        	            
+            itemizedoverlay.addOverlay(overlayitem);            
+        }
+        
         mapOverlays.add(itemizedoverlay);
+        
     }
 	
 
