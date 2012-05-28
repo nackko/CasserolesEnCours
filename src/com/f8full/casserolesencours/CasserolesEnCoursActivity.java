@@ -126,8 +126,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	TextView mAccountView, mStatusView;
 	/** The main handler. */
     Handler mMainHandler;
-	
-	
+    
+    	
 	
 	/** The uid. */
     public String mAloharUid;
@@ -1004,6 +1004,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
             if(response.getStatusCode() == 200)
             {
                 toastMessage("Fusion table update request 200 OK :)--" + dataList.get(0).getString("DESC"));
+                //Does nothing if nothing to flush
+                flushErrorRows();
             }
 
         } catch(HttpResponseException e)
@@ -1193,7 +1195,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
         if(errorFiles.length == 0)
         {
-            toastMessage("Nothing to flush");
+            //toastMessage("Nothing to flush");
             return;
         }
 
