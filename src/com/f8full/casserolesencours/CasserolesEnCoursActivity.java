@@ -382,7 +382,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
     public void onViewerModeClick(View view)
     {
     	//excellent, just do a request to grab the locations and pass them around
-    	final String SqlQuery = "SELECT Date, Location, Description FROM " + mFusionTableEncID;
+    	final String SqlQuery = "SELECT Date, Location, Description FROM " + mFusionTableEncID + " ORDER BY Date DESC";
     	
     	new Thread((new Runnable() {
 
