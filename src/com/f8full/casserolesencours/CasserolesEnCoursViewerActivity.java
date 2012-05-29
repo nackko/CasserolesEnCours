@@ -33,35 +33,41 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.viewer);
         
-        mapView = (MapView) findViewById(R.id.mapview);
-        mapView.setBuiltInZoomControls(true);
-        
-        mapOverlays = mapView.getOverlays();
-        drawable = this.getResources().getDrawable(R.drawable.ic_launcher);
-        
-                
         ArrayList<String> rowsExtra = getIntent().getStringArrayListExtra("rowsData");
-        
-        itemizedoverlay = new CasserolesItemizedOverlay(drawable);
-        
-        
-        
-        for (String row : rowsExtra)
+        if(rowsExtra.size() == 0)
         {
-        	String[] cells = row.split("\\|");
-        	
-        	//Location is in second element in the forme of 'Lat Long'
-        	String[] latLong = cells[1].split(" ");        	
-        	
-        	
-        	GeoPoint point = new GeoPoint((int)(Double.parseDouble(latLong[0])*1e6),(int)(Double.parseDouble(latLong[1])*1e6));
-        	OverlayItem overlayitem = new OverlayItem(point, "", "");      	
-        	            
-            itemizedoverlay.addOverlay(overlayitem);            
+        	finish();
         }
-        
-        mapOverlays.add(itemizedoverlay);
-        
+        else
+        {
+        	mapView = (MapView) findViewById(R.id.mapview);
+            mapView.setBuiltInZoomControls(true);
+            
+            mapOverlays = mapView.getOverlays();
+            drawable = this.getResources().getDrawable(R.drawable.ic_launcher);
+            
+                    
+            
+            
+            itemizedoverlay = new CasserolesItemizedOverlay(drawable);        
+            
+            for (String row : rowsExtra)
+            {
+            	String[] cells = row.split("\\|");
+            	
+            	//Location is in second element in the forme of 'Lat Long'
+            	String[] latLong = cells[1].split(" ");        	
+            	
+            	
+            	GeoPoint point = new GeoPoint((int)(Double.parseDouble(latLong[0])*1e6),(int)(Double.parseDouble(latLong[1])*1e6));
+            	OverlayItem overlayitem = new OverlayItem(point, "", "");      	
+            	            
+                itemizedoverlay.addOverlay(overlayitem);            
+            }
+            
+            mapOverlays.add(itemizedoverlay);
+        	
+        }      
     }
 	
 
