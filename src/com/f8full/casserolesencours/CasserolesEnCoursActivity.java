@@ -63,6 +63,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -248,6 +249,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 		} else {
 			((TextView)findViewById(R.id.tableInfo)).setText("Tap create");
+			((Button)findViewById(R.id.clearTable)).setEnabled(false);
+			((Button)findViewById(R.id.registerTable)).setEnabled(false);
 		}
 
 
@@ -638,6 +641,9 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 		TextView textView = (TextView) findViewById(R.id.tableInfo);
 		textView.setText("Tap create");
+				
+		((Button)findViewById(R.id.clearTable)).setEnabled(false);
+		((Button)findViewById(R.id.registerTable)).setEnabled(false);
 
 		mFusionTableEncID = null;
 		
@@ -651,10 +657,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	}
 
 	public void onCreateTableClick(View view) {
-
-		//Create table with required columns and retrieve it's encID
-
-		//final String description = "Fusion ! :)";
 
 		new Thread((new Runnable() {
 
@@ -695,9 +697,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	private void publicizeTable() throws IOException
 	{
-
-
-
 		try {
 			
 			XmlNamespaceDictionary docDic = new XmlNamespaceDictionary();
@@ -722,58 +721,16 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 			if(response.getStatusCode() == 201)
 			{
-				toastMessage("Please NOT click drive");
+				toastMessage(getString(R.string.publicizeDataTableToast));
 				//Success !
-				//Now send a mail at casserolesencours@gmail.com with table ID
-				Intent it = new Intent(Intent.ACTION_SEND);
-				String[] tos = { "casserolesencours@gmail.com" };
-				it.putExtra(Intent.EXTRA_EMAIL, tos);
-				it.putExtra(Intent.EXTRA_SUBJECT, "#casserolesencours register request for table ID:__" + mFusionTableEncID);
-				it.putExtra(Intent.EXTRA_TEXT, getString(R.string.regmailcommunified) + "\r\n" + getString(R.string.regmailbody) + "\r\nLa compilation des résultats sera disponible ici : http://casserolesencours.blogspot.ca/" + getString(R.string.regmailsign));
-				it.setType("message/rfc822");
-				startActivity(it);
-
-				//TODO: Replace by startActivityforResult to check if back was pressed
-				mMainHandler.post(new Runnable() {
-
-					public void run() {
-						TextView textView = (TextView) findViewById(R.id.tableInfo);
-						textView.setText(mFusionTableEncID);
-						
-						((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPublicPending));
-						setTableStatus(getString(R.string.tableStatusPublicPending));
-					}
-				});	   
-
-
 			}
 		}
 		catch (HttpResponseException e)
 		{
 			if(e.getStatusCode() == 409)	//Conflict
 			{
-				toastMessage("Please NOT click drive");
-				Intent it = new Intent(Intent.ACTION_SEND);
-				String[] tos = { "casserolesencours@gmail.com" };
-				it.putExtra(Intent.EXTRA_EMAIL, tos);
-				it.putExtra(Intent.EXTRA_SUBJECT, "#casserolesencours register request for table ID:__" + mFusionTableEncID);
-				it.putExtra(Intent.EXTRA_TEXT, getString(R.string.regmailnotcommunified) + "\r\n" + getString(R.string.regmailbody) + "\r\nGlobal results will be posted here : http://casserolesencours.blogspot.ca/" + getString(R.string.regmailsign));
-				it.setType("message/rfc822");
-				startActivity(it);
-				
-				//TODO: Replace by startActivityforResult to check if back was pressed
-				mMainHandler.post(new Runnable() {
-
-					public void run() {
-						TextView textView = (TextView) findViewById(R.id.tableInfo);
-						textView.setText(mFusionTableEncID);
-						
-						((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPublicPending));
-						setTableStatus(getString(R.string.tableStatusPublicPending));
-					}
-				});	   
-				
-				return;			
+				toastMessage(getString(R.string.publicizeDataTableToast));
+				return;
 			}
 			throw(e);
 		}
@@ -790,7 +747,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 			public void run() {
 				try {
-					publicizeTable();
+					publicizeTable();	//Make the data table public
+					createAndShareRequestTable();	//Create table and share it so it can be found
 
 				} 
 				catch (HttpResponseException e) 
@@ -815,9 +773,157 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		})).start();    	
+	}
+	
+	private void createAndShareRequestTable() throws JSONException, HttpResponseException, IOException
+	{
+		String SqlQuery = "CREATE TABLE " + getString(R.string.registerRequestTableName) + " (Date:DATETIME, IDToRegister:STRING, RegistrationProcessed:STRING)";
+
+		String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
+
+		GoogleUrl GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery + "&encid=true");
+
+		try {
+
+			HttpRequest request = mGOOGClient.getRequestFactory().buildPostRequest(GUrl, null);
+			HttpHeaders headers = new HttpHeaders();
+
+			headers.setContentLength("0");//Required so that Fusion Table API considers request
+			request.setHeaders(headers);
+
+			HttpResponse response = request.execute();
+
+			if(response.getStatusCode() == 200)
+			{
+				//Table created, insert relevant data
+				//Extract encrypted ID
+				String tableName="NONAME";
+
+				InputStreamReader inputStreamReader = new InputStreamReader(response.getContent());
+				BufferedReader bufferedStreamReader = new BufferedReader(inputStreamReader);
+				CSVReader reader = new CSVReader(bufferedStreamReader);
+				// The first line is the column names, and the remaining lines are the rows.
+				List<String[]> csvLines = reader.readAll();
+				List<String> columns = Arrays.asList(csvLines.get(0));
+				List<String[]> rows = csvLines.subList(1, csvLines.size());
+
+				//TextView textView = (TextView) findViewById(R.id.nameField);
+				String regRequestTableIDToShare = rows.get(0)[0];
+				
+				//Now insert data
+				SqlQuery = "INSERT INTO " + regRequestTableIDToShare + " (Date, IDToRegister, RegistrationProcessed) VALUES ('" + DateFormat.getDateTimeInstance().format(new Date()) + "', '"
+						+ mFusionTableEncID + "', '" 
+						+ "false"
+						+ "')";
+				
+				encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
+
+				GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery);
+
+				try {
+
+					HttpRequest requestFillRegTable = mGOOGClient.getRequestFactory().buildPostRequest(GUrl, null);
+					headers = new HttpHeaders();
+
+					headers.setContentLength("0");//Required so that Fusion Table API considers request
+					requestFillRegTable.setHeaders(headers);
+
+					HttpResponse responseFillRegTable = requestFillRegTable.execute();
+
+					/*if(responseFillRegTable.getStatusCode() == 200)
+					{
+						toastMessage("Fusion table update request 200 OK :)--" + dataList.get(0).getString("DESC"));
+						//Does nothing if nothing to flush
+						flushErrorRows();
+					}*/
+
+				} catch(HttpResponseException e)
+				{
+					throw e;                                 
+
+				} catch (IOException e) {
+
+					throw e;
+				}
+		
+				
+				//now share it with user casserolesencours@gmail.com
+				try {
+//					<entry xmlns="http://www.w3.org/2005/Atom" xmlns:gAcl='http://schemas.google.com/acl/2007'>
+//					  <category scheme='http://schemas.google.com/g/2005#kind'
+//					    term='http://schemas.google.com/acl/2007#accessRule'/>
+//					  <gAcl:role value='writer'/>
+//					  <gAcl:scope type='user' value='new_writer@example.com'/>
+//					</entry>
+					
+					XmlNamespaceDictionary docDic = new XmlNamespaceDictionary();
+					docDic.set("", "http://www.w3.org/2005/Atom" );
+					docDic.set("gAcl", "http://schemas.google.com/acl/2007");
+
+					GenericData data = new GenericData();
+					AtomCategory category = AtomCategory.newKind("accessRule");
+					AtomRole role = AtomRole.newRole("writer");
+					AtomScope scope = AtomScope.newScope("user", "casserolesencours@gmail.com");
+
+					data.put("category", category);
+					data.put("gAcl:role", role);
+					data.put("gAcl:scope", scope);
+
+					AtomContent content = AtomContent.forEntry(docDic,data);
+
+					GUrl = new GoogleUrl("https://docs.google.com/feeds/default/private/full/" + regRequestTableIDToShare + "/acl?v=3");
+					HttpRequest requestShare = mGOOGClient.getRequestFactory().buildPostRequest(GUrl, content);
+
+					HttpResponse responseShare = requestShare.execute();
+
+					if(responseShare.getStatusCode() == 201)
+					{
+						toastMessage(getString(R.string.registerShareTableOKToast));						
+						
+						mMainHandler.post(new Runnable() {
+
+							public void run() {
+																
+								((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPublicPending));
+								setTableStatus(getString(R.string.tableStatusPublicPending));
+							}
+						});	   
+
+
+					}
+				}
+				catch (HttpResponseException e)
+				{
+					if(e.getStatusCode() == 409)	//Conflict
+					{
+						toastMessage("SHOULD NOT HAPPEN");
+				    }
+					
+					throw(e);
+				}
+				catch (IOException e)
+				{
+					throw(e);    		
+				}
+			}
+
+		} catch(HttpResponseException e)
+		{
+			throw e;                                 
+
+		} catch (IOException e) {
+
+			throw e;
+		}
+
+
+		
 	}
 
 	private void sendCreateQueryToFusionTable() throws JSONException, HttpResponseException, IOException
@@ -868,6 +974,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						textView.setText(mFusionTableEncID);
 						
 						((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivate));
+						((Button)findViewById(R.id.clearTable)).setEnabled(true);
+						((Button)findViewById(R.id.registerTable)).setEnabled(true);
 					}
 				});	   
 

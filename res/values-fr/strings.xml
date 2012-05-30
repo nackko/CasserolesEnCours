@@ -14,6 +14,10 @@
     <string name="tableStatusPrivate">Privée</string>
     <string name="tableStatusPublicPending">Publique - enregistrement en attente</string>
     
+    <string name="registerRequestTableName">CasserolesEnCours_RegisterRequestTableNEPASMODIFIERSVP</string>
+    
+    <string name="registerShareTableOKToast">Partage de la table de requête OK... enregistrement en attente :).</string>
+    <string name="publicizeDataTableToast">Les données de votre table sont maintenant publiques. Merci ! :)</string>
     
 
 </resources>
