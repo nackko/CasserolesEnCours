@@ -2,5 +2,16 @@
 <resources>
     <string name="app_name">CasserolesEnCours</string>
     <string name="version">beta</string>
+    <string name="regmailcommunified">Your table is now common good. You can change this setting in your Google drive or directly by taping \'unregister\'</string>
+    <string name="regmailnotcommunified">Your table was already common good.</string>
+    <string name="regmailsign">\r\nF.\r\n--\r\nLife is a { } game.</string>
+    <string name="regmailbody">Sending this mail will make your contribution available in the global repository. Your mail won\'t be stored. Thanks !</string>
+    
+    <string name="timecoloredchkbox">Time colored...</string>
+    <string name="relativetimechkbox">...in real time</string>
+    
+    <string name="registrationStatus">Registration status :</string>
+    <string name="tableStatusPrivate">Private</string>
+    <string name="tableStatusPublicPending">Public - registration pending</string>
 
 </resources>

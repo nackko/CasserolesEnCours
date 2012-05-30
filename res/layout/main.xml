@@ -73,6 +73,21 @@
 						    android:onClick="onViewerModeClick"
 						    
 			    	        android:paddingLeft="10dip"/>
+    	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content">
+    	    <CheckBox
+                    android:id="@+id/timeColoredCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/timecoloredchkbox" />
+    	    <CheckBox
+                    android:id="@+id/relativeTimeCheckbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/timeColoredCheckbox"
+                    android:enabled="false"
+                    android:text="@string/relativetimechkbox" />
+
+    	    </RelativeLayout>
     	   
     	   <TextView 
    	        	android:layout_width="fill_parent"
@@ -90,6 +105,27 @@
 	    	        	android:textStyle="bold"
 		    	        android:paddingLeft="10dip"
 	    	        />
+	    	   <!-- <RelativeLayout android:id="@+id/RelativeLayout020" android:layout_width="fill_parent" android:layout_height="wrap_content"> -->
+	    	       <TextView 
+	    	        	android:id="@+id/tableStatusText"
+	    	        	android:layout_width="fill_parent"
+	    	        	android:layout_height="wrap_content"
+	    	        	android:paddingLeft="10dip"
+	    	        	android:text="@string/registrationStatus"
+	    	        />
+	    	       <TextView 
+	    	        	android:id="@+id/tableStatus"
+	    	        	android:layout_width="fill_parent"
+	    	        	android:layout_height="wrap_content"
+	    	        	android:layout_toRightOf="@+id/tableStatusText"
+	    	        	android:textStyle="bold"
+	    	        	
+	    	        	
+	    	        	
+	    	        />
+	    	       <!-- </RelativeLayout> -->
+	    	   
+	    	   
 	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content">
 	    	   <Button
 						    android:id="@+id/clearTable"
@@ -106,6 +142,15 @@
 						    android:text="Create"
 						    android:onClick="onCreateTableClick"
 						    android:layout_toRightOf="@+id/clearTable"
+			    	        android:paddingLeft="10dip"/>
+	    	   <Button
+						    android:id="@+id/registerTable"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:text="Register"
+						    android:onClick="onRegisterTableClick"
+						    android:layout_toRightOf="@+id/createTable"
+						    
 			    	        android:paddingLeft="10dip"/>
     	   </RelativeLayout>
 
@@ -221,6 +266,7 @@
 					    android:layout_width="match_parent"
 					    android:text="Unused"
 					    android:enabled="false"
+					    android:visibility="gone"
 					    android:paddingLeft="10dip"/>
 				    </RelativeLayout>
 				

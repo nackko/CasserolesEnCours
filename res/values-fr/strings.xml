@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">CasserolesEnCours</string>
+    <string name="version">beta</string>
+    <string name="regmailcommunified">Votre table est maintenant un bien public. Vous pouvez controller ce réglage dans votre espace Google Drive où en cliquant \'désenregistrer\'.</string>
+    <string name="regmailnotcommunified">Votre table était déja un bien public.</string>
+    <string name="regmailbody">L\'envoi de ce courriel fera apparaître votre contribution dans le répertoire global. Votre adresse courrielle ne sera pas conservée. Merci de votre apport !</string>
+    
+    <string name="timecoloredchkbox">Chronocoloré</string>
+    <string name="relativetimechkbox">...en temps réel</string>
+    
+    <string name="registrationStatus">Statut de publication :</string>
+    
+    <string name="tableStatusPrivate">Privée</string>
+    <string name="tableStatusPublicPending">Publique - enregistrement en attente</string>
+    
+    
+
+</resources>
