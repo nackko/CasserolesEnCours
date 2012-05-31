@@ -969,7 +969,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				mRegisterRequestTableID = regRequestTableIDToShare;
 				
 				//Now insert data
-				SqlQuery = "INSERT INTO " + regRequestTableIDToShare + " (Date) VALUES ('" + DateFormat.getDateTimeInstance().format(new Date()) + "')";
+				SqlQuery = "INSERT INTO " + regRequestTableIDToShare + " (Date, RequestedViewOnMasterTable_ID) VALUES ('" + DateFormat.getDateTimeInstance().format(new Date()) 
+						+"', '" + getString(R.string.regTableReqRegisteredTextStart) + " "
+						+ getString(R.string.updateRegStatusButtonText) + " "
+						+ getString(R.string.regTableReqRegisteredTextEnd) 
+						+ "')";
 				
 				encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
 

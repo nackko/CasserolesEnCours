@@ -75,6 +75,8 @@ public final class R {
     public static final class string {
         public static final int app_name=0x7f050000;
         public static final int publicizeDataTableToast=0x7f05000f;
+        public static final int regTableReqRegisteredTextEnd=0x7f050012;
+        public static final int regTableReqRegisteredTextStart=0x7f050011;
         public static final int registerRequestTableName=0x7f05000d;
         public static final int registerShareTableOKToast=0x7f05000e;
         public static final int registrationStatus=0x7f050008;
