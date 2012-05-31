@@ -11,15 +11,16 @@
     <string name="relativetimechkbox">...in real time</string>
     
     <string name="registrationStatus">Registration status :</string>
-    <string name="tableStatusPrivate">Private</string>
-    <string name="tableStatusPublicPending">Public - registration pending</string>
+    <string name="tableStatusNoTable">No table - Tap Create to begin.</string>
+    <string name="tableStatusPrivate">Private - Unregistered. tap register to request.</string>
+    <string name="tableStatusPrivatePending">Private - Unregistered. Registration pending</string>
+    <string name="tableStatusPrivateRegistered">Private - Registered. Thks ! :D</string>
     
-    <string name="registerRequestTableName">CasserolesEnCours_RegisterRequestTableDONOTMODIFYPLZ</string>
+    <string name="registerRequestTableName">CasserolesEnCours_RegisterRequestTableProd_DONOTMODIFYPLZ_</string>
     
     <string name="registerShareTableOKToast">Request table share success... registration is pending. :)</string>
     <string name="publicizeDataTableToast">Your data table is now public. Thks !</string>
     
+    <string name="updateRegStatusButtonText">Registered ?</string>
     
-    
-
 </resources>

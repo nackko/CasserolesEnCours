@@ -145,8 +145,13 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	private static final String PREF_TABLE_ENCID = "tableEncID";
 	private static final String PREF_TABLE_STATUS = "tableStatus";
+	private static final String PREF_REGREQUESTTABLE_ENCID = "reqTableID";
+	private static final String PREF_VIEWONMASTERTABLE_ENCID = "viewOnMasterTableID";
 
 	public String mFusionTableEncID;
+	public String mRegisterRequestTableID;
+	
+	public String mViewOnMasterID;
 
 	private ALMotionManager mMotionManager;
 	private boolean mIsStationary=true;
@@ -226,11 +231,35 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		mAloharUid = mPrefs.getString(PREF_KEY, null);
 		mFusionTableEncID = mPrefs.getString(PREF_TABLE_ENCID, null);
 		
+		mRegisterRequestTableID = mPrefs.getString(PREF_REGREQUESTTABLE_ENCID, null);
+		
+		if(mRegisterRequestTableID == null)
+		{
+			((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);
+		}
+		else
+		{
+			((Button)findViewById(R.id.refreshRegistration)).setEnabled(true);
+			((Button)findViewById(R.id.registerTable)).setEnabled(false);
+		}
+		
+		
+		mViewOnMasterID = mPrefs.getString(PREF_VIEWONMASTERTABLE_ENCID, null);
+		
+		if(mViewOnMasterID == null)
+		{
+			((Button)findViewById(R.id.refreshRegistration)).setEnabled(true);
+		}
+		else
+		{
+			((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);
+		}
+		
 		
 		
 		String tableStatus = mPrefs.getString(PREF_TABLE_STATUS, null);
 		if(tableStatus == null)
-			tableStatus = getString(R.string.tableStatusPrivate);
+			tableStatus = getString(R.string.tableStatusNoTable);
 		
 		((TextView)findViewById(R.id.tableStatus)).setText(tableStatus);	
 		
@@ -251,6 +280,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			((TextView)findViewById(R.id.tableInfo)).setText("Tap create");
 			((Button)findViewById(R.id.clearTable)).setEnabled(false);
 			((Button)findViewById(R.id.registerTable)).setEnabled(false);
+			((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);
+			((Button)findViewById(R.id.createTable)).setEnabled(true);
 		}
 
 
@@ -369,6 +400,18 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	void setRefreshToken(String refreshToken) {
 		SharedPreferences.Editor editor = mPrefs.edit();
 		editor.putString(PREF_REFRESH_TOKEN, refreshToken);
+		editor.commit();
+	}
+	
+	void setViewOnMasterTableID(String viewOnMasterID) {
+		SharedPreferences.Editor editor = mPrefs.edit();
+		editor.putString(PREF_VIEWONMASTERTABLE_ENCID, viewOnMasterID);
+		editor.commit();
+	}
+	
+	void setRegRequestTableID(String tableEncID) {
+		SharedPreferences.Editor editor = mPrefs.edit();
+		editor.putString(PREF_REGREQUESTTABLE_ENCID, tableEncID);
 		editor.commit();
 	}
 
@@ -644,14 +687,22 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				
 		((Button)findViewById(R.id.clearTable)).setEnabled(false);
 		((Button)findViewById(R.id.registerTable)).setEnabled(false);
+		
+		((Button)findViewById(R.id.registerTable)).setEnabled(false);
+		((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);	
+		((Button)findViewById(R.id.createTable)).setEnabled(true);
 
 		mFusionTableEncID = null;
+		mRegisterRequestTableID = null;
+		mViewOnMasterID = null;
 		
-		((TextView)findViewById(R.id.tableStatus)).setText(R.string.tableStatusPrivate);
+		((TextView)findViewById(R.id.tableStatus)).setText(R.string.tableStatusNoTable);
 
 		SharedPreferences.Editor editor2 = mPrefs.edit();
 		editor2.remove(PREF_TABLE_ENCID);
 		editor2.remove(PREF_TABLE_STATUS);
+		editor2.remove(PREF_VIEWONMASTERTABLE_ENCID);
+		editor2.remove(PREF_REGREQUESTTABLE_ENCID);
 		editor2.commit();
 
 	}
@@ -747,7 +798,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 			public void run() {
 				try {
-					publicizeTable();	//Make the data table public
+					//publicizeTable();	//Make the data table public -- Removed as it's not nescessary, server will 
+					//it will be shared with server for initial data copy and then given back to the user
 					createAndShareRequestTable();	//Create table and share it so it can be found
 
 				} 
@@ -781,9 +833,106 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		})).start();    	
 	}
 	
+	public void onRegisterRefreshClick(View v){
+		
+		if(mRegisterRequestTableID == null)
+			return;	
+		
+		new Thread((new Runnable() {
+
+			public void run() {
+				try {
+					//Getting view on master table on which the contributor has write access
+					String SqlQuery = "SELECT Date, RequestedViewOnMasterTable_ID FROM " + mRegisterRequestTableID + " ORDER BY Date DESC";
+					
+					String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
+
+					GoogleUrl GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery + "&encid=true");
+
+					HttpRequest request = mGOOGClient.getRequestFactory().buildGetRequest(GUrl);
+					HttpHeaders headers = new HttpHeaders();
+
+					headers.setContentLength("0");//Required so that Fusion Table API considers request
+					request.setHeaders(headers);
+
+					HttpResponse response = request.execute();
+					
+					if(response.getStatusCode() == 200)
+					{
+						//Here I have my data
+						InputStreamReader inputStreamReader = new InputStreamReader(response.getContent());
+						BufferedReader bufferedStreamReader = new BufferedReader(inputStreamReader);
+						CSVReader reader = new CSVReader(bufferedStreamReader);
+						// The first line is the column names, and the remaining lines are the rows.
+						List<String[]> csvLines = reader.readAll();
+						List<String> columns = Arrays.asList(csvLines.get(0));
+						List<String[]> rows = csvLines.subList(1, csvLines.size());
+						
+						if(rows.size() != 2)
+						{
+							toastMessage("Nope, not registered yet :/");
+							
+							return;
+						}
+						else
+						{
+							//toastMessage("View ID is : " + rows.get(0)[1] );
+							mViewOnMasterID = rows.get(0)[1];
+							
+							mMainHandler.post(new Runnable() {
+
+								public void run() {
+																	
+									//Update registration UI
+									((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivateRegistered));
+									setTableStatus(getString(R.string.tableStatusPrivateRegistered));
+									((Button)findViewById(R.id.registerTable)).setEnabled(false);
+									((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);
+								}
+							});	   
+							
+							
+						}
+						
+						
+						
+					}
+					
+					
+					
+
+				} 
+				catch (HttpResponseException e) 
+				{
+					if (e.getStatusCode() == 401) 
+					{
+						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
+						mGOOGCredential.setAccessToken(null);
+
+						SharedPreferences.Editor editor2 = mPrefs.edit();
+						editor2.remove(PREF_REFRESH_TOKEN);
+						editor2.commit();
+
+
+						toastMessage("OAuth login required, redirecting...");
+
+						//This last Constant is weird
+						startActivityForResult(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
+
+					}
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		})).start();
+		
+	}
+	
 	private void createAndShareRequestTable() throws JSONException, HttpResponseException, IOException
 	{
-		String SqlQuery = "CREATE TABLE " + getString(R.string.registerRequestTableName) + " (Date:DATETIME, IDToRegister:STRING, RegistrationProcessed:STRING)";
+		String SqlQuery = "CREATE TABLE " + getString(R.string.registerRequestTableName) + " (Date:DATETIME, RequestedViewOnMasterTable_ID:STRING)";
 
 		String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
 
@@ -816,11 +965,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				//TextView textView = (TextView) findViewById(R.id.nameField);
 				String regRequestTableIDToShare = rows.get(0)[0];
 				
+				setRegRequestTableID(regRequestTableIDToShare);
+				mRegisterRequestTableID = regRequestTableIDToShare;
+				
 				//Now insert data
-				SqlQuery = "INSERT INTO " + regRequestTableIDToShare + " (Date, IDToRegister, RegistrationProcessed) VALUES ('" + DateFormat.getDateTimeInstance().format(new Date()) + "', '"
-						+ mFusionTableEncID + "', '" 
-						+ "false"
-						+ "')";
+				SqlQuery = "INSERT INTO " + regRequestTableIDToShare + " (Date) VALUES ('" + DateFormat.getDateTimeInstance().format(new Date()) + "')";
 				
 				encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
 
@@ -836,12 +985,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 					HttpResponse responseFillRegTable = requestFillRegTable.execute();
 
-					/*if(responseFillRegTable.getStatusCode() == 200)
+					if(responseFillRegTable.getStatusCode() == 200)
 					{
-						toastMessage("Fusion table update request 200 OK :)--" + dataList.get(0).getString("DESC"));
-						//Does nothing if nothing to flush
-						flushErrorRows();
-					}*/
+						toastMessage("Request table timestamped :)");
+						
+					}
 
 				} catch(HttpResponseException e)
 				{
@@ -890,8 +1038,10 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 							public void run() {
 																
-								((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPublicPending));
-								setTableStatus(getString(R.string.tableStatusPublicPending));
+								((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivatePending));
+								setTableStatus(getString(R.string.tableStatusPrivatePending));
+								((Button)findViewById(R.id.refreshRegistration)).setEnabled(true);
+								((Button)findViewById(R.id.registerTable)).setEnabled(false);
 							}
 						});	   
 
@@ -950,8 +1100,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 			if(response.getStatusCode() == 200)
 			{
-				String tableName="NONAME";
-
 				InputStreamReader inputStreamReader = new InputStreamReader(response.getContent());
 				BufferedReader bufferedStreamReader = new BufferedReader(inputStreamReader);
 				CSVReader reader = new CSVReader(bufferedStreamReader);
@@ -976,6 +1124,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivate));
 						((Button)findViewById(R.id.clearTable)).setEnabled(true);
 						((Button)findViewById(R.id.registerTable)).setEnabled(true);
+						((Button)findViewById(R.id.createTable)).setEnabled(false);
 					}
 				});	   
 
@@ -1006,16 +1155,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 			final String userStateSwitch = "Stationary=" + mMotionManager.isStationary() + "|OnCommute=" + mMotionManager.isOnCommute();
 
-			//final String motionStateToLog = DateFormat.getDateTimeInstance().format(new Date()) + " " + motionStateSwitch + "||" + userStateSwitch + "||Lat Long :" + getLatLongPosition() + "\r\n";
-
-			//Not threaded : file write access don't play well in multithreaded environments
-			//            try {
-			//                writeToSD_CSV(false, motionStateSwitch);
-			//            } catch (IOException e) {
-			//                toastError("Can't write log to SD Card, IOException");
-			//                //e.printStackTrace();
-			//            }
-
 			new Thread((new Runnable() {
 
 				public void run() {
@@ -1026,7 +1165,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				}
 			})).start();
 
-			///////////////////////////////////////////////
 			mMainHandler.post(new Runnable() {
 
 				public void run() {
@@ -1034,7 +1172,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 					((TextView)findViewById(R.id.user_state)).setText(userStateSwitch);
 				}
 			});
-			////////////////////////////////////////////////////////
 		}
 
 
@@ -1119,18 +1256,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 		String debugOrder = "";
 
-		////////////////////////////
-		//DEBUG : this is actually not working right now
-		//        try {
-		//            debugOrder = timeNDesc.getString("DESC");
-		//            debugOrder += " DO:" + Integer.toString(mDebugRequestNumber.getAndIncrement());
-		//            //timeNDesc.put("DESC", debugOrder);
-		//        } catch (JSONException e1) {
-		//            // TODO Auto-generated catch block
-		//            e1.printStackTrace();
-		//        }
-		//////////////////////////////
-
 		try {
 			newData.put("DATE", timeNDescNLoc.get("DATE"));
 			newData.put("LOCATION", timeNDescNLoc.get("LOCATION"));
@@ -1153,7 +1278,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		}
 
 	}
-	///////////////////////////////////////////////////////
 
 	private void pushDataToFusionTable(JSONObject data, boolean logOnError) throws JSONException
 	{
@@ -1256,12 +1380,10 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		for(int i=0; i<dataList.size(); ++i)
 		{
 			SqlQuery += "INSERT INTO " + mFusionTableEncID + " (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
+			//TODO : the following request when table is registered, in addition to the one the personal table
+			//SqlQuery += "INSERT INTO " + mViewOnMasterID + " (Date, Location, Manual, Description, IsStationary, RequestTableID) VALUES ('"//fv#casseroles
 
 
-					//Corresponds to following table https://www.google.com/fusiontables/DataSource?snapid=S512254UC6Z
-					//SqlQuery += "INSERT INTO 1kOj-qW2ymCjwZ40HAFZ0HWwobZgCbEyOQVLqB5Q (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
-					//SqlQuery += "INSERT INTO 16ehK-lBkc8e_FTsKkizVteghlo6XSiHpLwBTSfo (Date, Location, Manual, Description, IsStationary, IsOnCommute) VALUES ('"//fv
-					//SqlQuery += "INSERT INTO 1Ud9BqVMCWWDVmSGHUFGgmAnmxqhXiXTt_gllWxI (Date, Location, Manual, Description, IsStationary, IsOnCommute) VALUES ('"//sg
 					+ dataList.get(i).getString("DATE")
 					+ "', '"
 					+ dataList.get(i).getString("LOCATION")
@@ -1271,6 +1393,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 					+ dataList.get(i).getString("DESC")
 					+ "', '"
 					+ dataList.get(i).getBoolean("STATIONARY")
+					+ "', '"
+                    + mRegisterRequestTableID
 					/*+ "', '"
                     + dataList.get(i).getBoolean("COMMUTE")*/
 					+ "')";
@@ -1285,10 +1409,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
 
 		GoogleUrl GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery);//&access_token=" + credential.getAccessToken());
-		//GenericUrl  GUrl = new GoogleUrl(SERVICE_URL + "?sql=" + encodedQuery);//&access_token=" + credential.getAccessToken());
-		//GUrl.get
-
-		//UrlEncodedContent content = new UrlEncodedContent();
 
 		try {
 

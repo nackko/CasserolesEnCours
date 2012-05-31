@@ -152,6 +152,15 @@
 						    android:layout_toRightOf="@+id/createTable"
 						    
 			    	        android:paddingLeft="10dip"/>
+	    	   <Button
+						    android:id="@+id/refreshRegistration"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:text="@string/updateRegStatusButtonText"
+						    android:onClick="onRegisterRefreshClick"
+						    android:layout_toRightOf="@+id/registerTable"
+						    
+			    	        android:paddingLeft="10dip"/>
     	   </RelativeLayout>
 
    	        <TextView 

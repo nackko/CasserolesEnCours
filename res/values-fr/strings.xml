@@ -11,13 +11,17 @@
     
     <string name="registrationStatus">Statut de publication :</string>
     
-    <string name="tableStatusPrivate">Privée</string>
-    <string name="tableStatusPublicPending">Publique - enregistrement en attente</string>
+    <string name="tableStatusNoTable">Pas de table - Sélectionnez create pour commencer.</string>
+    <string name="tableStatusPrivate">Privée - non enregistrée.  Appuyez sur Register pour commencer</string>
+    <string name="tableStatusPrivatePending">Privée - non enregistrée. Enregistrement en attente.</string>
+    <string name="tableStatusPrivateRegistered">Privée - Enregistrée. Merci ! :D</string>
     
-    <string name="registerRequestTableName">CasserolesEnCours_RegisterRequestTableNEPASMODIFIERSVP</string>
+    <string name="registerRequestTableName">CasserolesEnCours_RegisterRequestTableProd_NEPASMODIFIERSVP_</string>
     
     <string name="registerShareTableOKToast">Partage de la table de requête OK... enregistrement en attente :).</string>
     <string name="publicizeDataTableToast">Les données de votre table sont maintenant publiques. Merci ! :)</string>
+    
+    <string name="updateRegStatusButtonText">Enregistrée ?</string>
     
 
 </resources>
