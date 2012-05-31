@@ -24,6 +24,7 @@
     <string name="updateRegStatusButtonText">Registered ?</string>
     
     <string name="regTableReqRegisteredTextStart">Registered request pending. Button </string>
-    <string name="regTableReqRegisteredTextEnd"> to refresh.</string>
+    <string name="regTableReqRegisteredTextEnd">to refresh.</string>
+    
     
 </resources>
