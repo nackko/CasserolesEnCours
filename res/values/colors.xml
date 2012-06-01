@@ -8,5 +8,7 @@
 	<color name="text_violet">#f0e68c</color>
 	<color name="text_black">#333333</color>
 	<color name="text_red">#FF0000</color>
+	<color name="text_green">#33FF00</color>
+	
 	
 </resources>

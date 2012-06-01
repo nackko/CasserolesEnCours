@@ -119,10 +119,6 @@ import com.google.api.services.docs.model.DocumentListFeed;*/
 
 //import 
 
-import org.apache.http.NameValuePair;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.livinglabmontreal.AtomCategory;
@@ -131,6 +127,7 @@ import org.livinglabmontreal.AtomScope;
 import org.livinglabmontreal.OAuth2AccessTokenActivity;
 import org.livinglabmontreal.OAuth2ClientCredentials;
 import com.google.api.client.googleapis.services.GoogleClient.Builder;
+
 
 public class CasserolesEnCoursActivity extends Activity implements ALEventListener, ALMotionListener {
 	private static final String PREF_NAME = "casserolesencours";
@@ -283,10 +280,48 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		}
 		
 		
+		if(mAlohar.isServiceRunning())
+		{
+			//findViewById(R.id.timeFilterSpinner).setClickable(true);
+			mDistanceFilterSpinner.setEnabled(true);
+		}
+		else
+		{
+			//findViewById(R.id.timeFilterSpinner).setClickable(false);
+			mDistanceFilterSpinner.setEnabled(false);
+		}
 		
 		String tableStatus = mPrefs.getString(PREF_TABLE_STATUS, null);
 		if(tableStatus == null)
-			tableStatus = getString(R.string.tableStatusNoTable);
+		{
+			tableStatus = getString(R.string.geolocationStatusRegRequired);
+			//Setup interface
+			//Done in XML file
+		}
+		else
+		{
+			//setup interface
+			if(tableStatus.equals(getString(R.string.geolocationAnonymizePending)))
+			{
+				((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_orange));
+				((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationAnonymizePending));
+				
+				
+				((Button)findViewById(R.id.registerAnonymize)).setVisibility(View.GONE);
+				((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.VISIBLE);
+			}
+			else if(tableStatus.equals(getString(R.string.geolocationAnonymizeProcessed)))
+			{
+				((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_green));
+				((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationAnonymizeProcessed));
+				
+				((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.GONE);
+				((Button)findViewById(R.id.registerAnonymize)).setVisibility(View.GONE);
+				((Button)findViewById(R.id.toggleGeolocation)).setVisibility(View.VISIBLE);
+				findViewById(R.id.geolocationServiceStatus).setVisibility(View.VISIBLE);
+				findViewById(R.id.myDataCheckbox).setEnabled(true);
+			}
+		}
 		
 		((TextView)findViewById(R.id.tableStatus)).setText(tableStatus);	
 		
@@ -298,20 +333,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		} else {
 			mAloharAuthLayout.setVisibility(View.VISIBLE);
 		}
-
-		if (mFusionTableEncID != null) {
-
-			((TextView)findViewById(R.id.tableInfo)).setText(mFusionTableEncID);            
-
-		} else {
-			((TextView)findViewById(R.id.tableInfo)).setText("Tap create");
-			((Button)findViewById(R.id.clearTable)).setEnabled(false);
-			((Button)findViewById(R.id.registerTable)).setEnabled(false);
-			((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);
-			((Button)findViewById(R.id.createTable)).setEnabled(true);
-		}
-
-
 
 		mGOOGCredential = new GoogleCredential.Builder().setTransport(mNetHttpTransport)
 				.setJsonFactory(mJaksonJSONFactory)//.build();
@@ -517,32 +538,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		String distanceFilter =	((Spinner)findViewById(R.id.distanceFilterSpinner)).getSelectedItem().toString();
 		
 		String whereClause = "";
-		boolean isFiltered = false;
-		
-		if(timeFilter.equals("--")== false)
-			//time filtering requested by user
-		{
-			Calendar cl = Calendar.getInstance();
-			cl.setTime(new Date());
-			switch(((Spinner)findViewById(R.id.timeFilterSpinner)).getSelectedItemPosition())
-			{
-			case 1:
-				cl.add(Calendar.MINUTE, -5);
-				break;
-			case 2:
-				cl.add(Calendar.MINUTE, -15);
-				break;
-			case 3:
-				cl.add(Calendar.MINUTE, -45);
-				break;
-			case 4:
-				cl.add(Calendar.HOUR, -2);
-				break;
-			}
-			
-			whereClause += "WHERE Date>='" + DateFormat.getDateTimeInstance().format(cl.getTime()) + "' ";
-		}
-		
+				
 		if(distanceFilter.equals("--")== false)
 			//time filtering requested by user
 		{
@@ -553,15 +549,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			}
 			else
 			{
-				if(whereClause.isEmpty() == false)
-				{
-					whereClause += "AND ";
-				}
-				else
-				{
-					whereClause += "WHERE ";
-				}	
-				
 				String WhereClauseDistanceFilter = "";
 				
 				switch(((Spinner)findViewById(R.id.distanceFilterSpinner)).getSelectedItemPosition())
@@ -583,11 +570,16 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 					break;
 				}
 				
+				//double testLat = 45.5334;
+				//double testLong = -73.5838;
+				
 				//WHERE Pharmacy='yes' AND 
-				whereClause += "ST_INTERSECTS(Location, CIRCLE(LATLNG(" 
+				whereClause += "WHERE ST_INTERSECTS(Location, CIRCLE(LATLNG(" 
 							+ Double.toString(mAlohar.getPlaceManager().getCurrentLocation().getLatitude())
+							//+ Double.toString(testLat)
 							+ ","
 							+ Double.toString(mAlohar.getPlaceManager().getCurrentLocation().getLongitude())
+							//+ Double.toString(testLong)
 						    + "),"
 						    + WhereClauseDistanceFilter
 						    + ")) ";
@@ -595,11 +587,54 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			}
 		}
 		
-		//excellent, just do a request to grab the locations and pass them around
+		if(timeFilter.equals("--")== false)
+			//time filtering requested by user
+		{
+			if(whereClause.isEmpty() == false)
+			{
+				whereClause += "AND ";
+			}
+			else
+			{
+				whereClause += "WHERE ";
+			}	
+			
+			Calendar cl = Calendar.getInstance();
+			cl.setTime(new Date());
+			switch(((Spinner)findViewById(R.id.timeFilterSpinner)).getSelectedItemPosition())
+			{
+			case 1:
+				cl.add(Calendar.MINUTE, -5);
+				break;
+			case 2:
+				cl.add(Calendar.MINUTE, -15);
+				break;
+			case 3:
+				cl.add(Calendar.MINUTE, -45);
+				break;
+			case 4:
+				cl.add(Calendar.HOUR, -2);
+				break;
+			}
+			
+			whereClause += "Date>='" + DateFormat.getDateTimeInstance().format(cl.getTime()) + "' ";
+		}
+		
+		
 		//1cmlx9aChHUYTWwYivaZucr7NHNsP_ulvEPX1FoM is master table public view ID
-		final String SqlQuery = "SELECT Date, Location, Description FROM 1cmlx9aChHUYTWwYivaZucr7NHNsP_ulvEPX1FoM " 
+		String fromTableID = "1cmlx9aChHUYTWwYivaZucr7NHNsP_ulvEPX1FoM";
+		
+		if(((CheckBox)findViewById(R.id.myDataCheckbox)).isChecked())
+		{
+			fromTableID = mViewOnMasterID;
+		}
+		
+		//excellent, just do a request to grab the locations and pass them around
+		 
+		final String SqlQuery = "SELECT Date, Location, Description FROM "
+				+ fromTableID + " " 
 				+ whereClause 
-				+ " ORDER BY Date DESC LIMIT "
+				+ "ORDER BY Date DESC LIMIT "
 				+ ((EditText)findViewById(R.id.nbIconsMax)).getText();
 
 		new Thread((new Runnable() {
@@ -703,11 +738,28 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		if (isChecked) {
 			//turn on
 			mAlohar.startServices();
-			mStatusView.setText("Service is running!");
+			//StatusView.setText("Service is running!");
+			((TextView)findViewById(R.id.geolocationServiceStatus)).setText(getString(R.string.geolocationStatusOn));
+			((TextView)findViewById(R.id.geolocationServiceStatus)).setTextColor(getResources().getColor(R.color.text_red));
+			((TextView)findViewById(R.id.distanceFilterNA)).setVisibility(View.INVISIBLE);
+			findViewById(R.id.FrequencyGroupLayout).setVisibility(View.VISIBLE);
+			mDistanceFilterSpinner.setEnabled(true);
+			
+			
 		} else {
 			//turn off
 			mAlohar.stopServices();
-			mStatusView.setText("Service stopped");
+			((TextView)findViewById(R.id.geolocationServiceStatus)).setText(getString(R.string.geolocationStatusOff));
+			((TextView)findViewById(R.id.geolocationServiceStatus)).setTextColor(getResources().getColor(R.color.text_green));
+			((TextView)findViewById(R.id.distanceFilterNA)).setVisibility(View.VISIBLE);
+			findViewById(R.id.FrequencyGroupLayout).setVisibility(View.INVISIBLE);
+			mDistanceFilterSpinner.setEnabled(false);
+			
+			//((RadioGroup) findViewById(R.id.pollFrequencyRadioGroup)).check(-1);
+			cancelActiveTasks();
+			mLocationPollThreadExecutor.purge();
+			
+			mIsStationary = true;
 		}
 	}
 
@@ -804,8 +856,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	public void onClearTableClick(View view) {
 
-		TextView textView = (TextView) findViewById(R.id.tableInfo);
-		textView.setText("Tap create");
+		//TextView textView = (TextView) findViewById(R.id.tableInfo);
+		//textView.setText("Tap create");
 				
 		((Button)findViewById(R.id.clearTable)).setEnabled(false);
 		((Button)findViewById(R.id.registerTable)).setEnabled(false);
@@ -913,6 +965,47 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		}
 
 	}
+	
+	public void onAnonymizeClick(View view)
+	{
+		new Thread((new Runnable() {
+
+			public void run() {
+				try {
+					//publicizeTable();	//Make the data table public -- Removed as it's not nescessary, server will 
+					//it will be shared with server for initial data copy and then given back to the user
+					createAndShareRequestTable();	//Create table and share it so it can be found
+
+				} 
+				catch (HttpResponseException e) 
+				{
+					if (e.getStatusCode() == 401) 
+					{
+						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
+						mGOOGCredential.setAccessToken(null);
+
+						SharedPreferences.Editor editor2 = mPrefs.edit();
+						editor2.remove(PREF_REFRESH_TOKEN);
+						editor2.commit();
+
+
+						toastMessage("OAuth login required, redirecting...");
+
+						//This last Constant is weird
+						startActivityForResult(new Intent().setClass(getApplicationContext(),OAuth2AccessTokenActivity.class), REQUEST_OAUTH2_AUTHENTICATE);
+
+					}
+
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		})).start();
+	}
 
 	public void onRegisterTableClick(View view)
 	{
@@ -955,7 +1048,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		})).start();    	
 	}
 	
-	public void onRegisterRefreshClick(View v){
+	public void onAnonymizeRefreshClick(View v){
 		
 		if(mRegisterRequestTableID == null)
 			return;	
@@ -992,24 +1085,31 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						
 						if(rows.size() != 3 )
 						{
-							toastMessage("Nope, not registered yet :/");
+							toastMessage(getString(R.string.regNotProcessed));
 							
 							return;
 						}
 						else
 						{
-							//toastMessage("View ID is : " + rows.get(0)[1] );
+							
 							mViewOnMasterID = rows.get(0)[1];
+							setViewOnMasterTableID(mViewOnMasterID);
+							
 							
 							mMainHandler.post(new Runnable() {
 
 								public void run() {
-																	
-									//Update registration UI
-									((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivateRegistered));
-									setTableStatus(getString(R.string.tableStatusPrivateRegistered));
-									((Button)findViewById(R.id.registerTable)).setEnabled(false);
-									((Button)findViewById(R.id.refreshRegistration)).setEnabled(false);
+									
+									((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_green));
+									((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationAnonymizeProcessed));
+									
+									setTableStatus(getString(R.string.geolocationAnonymizeProcessed));
+									
+									findViewById(R.id.myDataCheckbox).setEnabled(true);
+									
+									((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.GONE);
+									((Button)findViewById(R.id.toggleGeolocation)).setVisibility(View.VISIBLE);
+									findViewById(R.id.geolocationServiceStatus).setVisibility(View.VISIBLE);
 								}
 							});	   
 							
@@ -1163,11 +1263,19 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						mMainHandler.post(new Runnable() {
 
 							public void run() {
-																
-								((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivatePending));
-								setTableStatus(getString(R.string.tableStatusPrivatePending));
-								((Button)findViewById(R.id.refreshRegistration)).setEnabled(true);
-								((Button)findViewById(R.id.registerTable)).setEnabled(false);
+								
+								((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_orange));
+								((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationAnonymizePending));
+								
+								setTableStatus(getString(R.string.geolocationAnonymizePending));
+								
+								((Button)findViewById(R.id.registerAnonymize)).setVisibility(View.GONE);
+								((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.VISIBLE);
+								
+								
+								
+								//((Button)findViewById(R.id.refreshRegistration)).setEnabled(true);
+								//((Button)findViewById(R.id.registerTable)).setEnabled(false);
 							}
 						});	   
 
@@ -1244,8 +1352,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				mMainHandler.post(new Runnable() {
 
 					public void run() {
-						TextView textView = (TextView) findViewById(R.id.tableInfo);
-						textView.setText(mFusionTableEncID);
+						//TextView textView = (TextView) findViewById(R.id.tableInfo);
+						//textView.setText(mFusionTableEncID);
 						
 						((TextView)findViewById(R.id.tableStatus)).setText(getString(R.string.tableStatusPrivate));
 						((Button)findViewById(R.id.clearTable)).setEnabled(true);
@@ -1360,6 +1468,13 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	/////////////////////////////////////////////////////////////////////////////
 	protected void writeToFusionTable(boolean manual, String desc) 
 	{
+		if(mAlohar.getPlaceManager().getCurrentLocation().getLatitude() == 0.0
+				|| mAlohar.getPlaceManager().getCurrentLocation().getLongitude() == 0.0)
+		{
+			toastMessage(getString(R.string.nullocationErrorMessage));
+			return;
+		}
+		
 		JSONObject newData = new JSONObject();
 
 		try {
@@ -1378,14 +1493,29 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	protected void writeToFusionTable(boolean manual, JSONObject timeNDescNLoc) 
 	{
+		String Location;
+		try {
+			Location = timeNDescNLoc.getString("LOCATION");
+		} catch (JSONException e1) {
+			return;
+		}
+		
+		
+		if(Location.contains("0.0"))
+		{
+			toastMessage(getString(R.string.nullocationErrorMessage));
+			return;
+		}
+		
+		
 		JSONObject newData = new JSONObject();
 
 		String debugOrder = "";
 
 		try {
-			newData.put("DATE", timeNDescNLoc.get("DATE"));
-			newData.put("LOCATION", timeNDescNLoc.get("LOCATION"));
-			newData.put("DESC", timeNDescNLoc.get("DESC"));
+			newData.put("DATE", timeNDescNLoc.getString("DATE"));
+			newData.put("LOCATION", timeNDescNLoc.getString("LOCATION"));
+			newData.put("DESC", timeNDescNLoc.getString("DESC"));
 
 			/////////////////////////////////////////////////////////////
 			//Additional data

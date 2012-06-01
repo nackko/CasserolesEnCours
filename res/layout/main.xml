@@ -143,6 +143,7 @@
                 	android:layout_toRightOf="@+id/TextViewLocation"
                 	android:layout_below="@id/TextViewVisualize"
                 	android:textColor="@color/text_orange"
+                	android:id="@+id/distanceFilterNA"
                     
                                       
                     android:text="@string/viewDistanceFilterGeolocationOff"
@@ -156,8 +157,7 @@
                     android:prompt="@string/viewDistanceFilterPrompt"
                     android:layout_below="@+id/TextViewLocation"
                     android:layout_toRightOf="@+id/timeFilterSpinner"
-                    android:clickable="false"
-                    
+                                        
                     android:id="@+id/distanceFilterSpinner"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content" />
@@ -226,7 +226,13 @@
     	    
 
     	    </RelativeLayout>
-    	   
+    	   <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:text="----------"
+   	        />
     	   <TextView 
    	        	android:layout_width="fill_parent"
    	        	android:layout_height="wrap_content"
@@ -236,47 +242,89 @@
    	        />
     	   
 	    	   <TextView 
-	    	        	android:id="@+id/tableInfo"
-	    	        	android:layout_width="fill_parent"
-	    	        	android:layout_height="wrap_content"
-	    	        	android:textColor="@color/text_orange"
-	    	        	android:textStyle="bold"
-		    	        android:paddingLeft="10dip"
-		    	        android:visibility="gone"
-	    	        />
-	    	   <!-- <RelativeLayout android:id="@+id/RelativeLayout020" android:layout_width="fill_parent" android:layout_height="wrap_content"> -->
-	    	       <TextView 
-	    	        	android:id="@+id/tableStatusText"
+	    	        	android:id="@+id/geolocationStatusText"
 	    	        	android:layout_width="fill_parent"
 	    	        	android:layout_height="wrap_content"
 	    	        	android:paddingLeft="10dip"
-	    	        	android:text="@string/registrationStatus"
-	    	        	android:visibility="gone"
+	    	        	android:text="@string/geolocationStatusText"
+	    	        	android:textColor="@color/text_blue"
+	    	        	
+	    	        />
+	    	   <!-- <RelativeLayout android:id="@+id/RelativeLayout020" android:layout_width="fill_parent" android:layout_height="wrap_content"> -->
+	    	       <TextView 
+	    	        	android:id="@+id/geolocationStatus"
+	    	        	android:layout_width="fill_parent"
+	    	        	android:layout_height="wrap_content"
+	    	        	android:paddingLeft="10dip"
+	    	        	android:text="@string/geolocationStatusRegRequired"
+	    	        	android:textColor="@color/text_red"
+	    	        	
+	    	        	
 	    	        />
 	    	       <TextView 
 	    	        	android:id="@+id/tableStatus"
 	    	        	android:layout_width="fill_parent"
 	    	        	android:layout_height="wrap_content"
-	    	        	android:layout_toRightOf="@+id/tableStatusText"
+	    	        	
 	    	        	android:textStyle="bold"
+	    	        	
 	    	        	android:visibility="gone"
-	    	        	
-	    	        	
-	    	        	
+	    	        />
+	    	       <Button
+						    android:id="@+id/registerAnonymize"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:text="@string/geolocationButtonAnonymize"
+						    android:onClick="onAnonymizeClick"
+						    android:layout_toRightOf="@+id/createTable"
+						    
+			    	        android:paddingLeft="10dip"/>
+	    	       <Button
+						    android:id="@+id/checkAnonymize"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:text="@string/geolocationButtonAnonymizeRefresh"
+						    android:onClick="onAnonymizeRefreshClick"
+						    android:visibility="gone"
+						    
+						    
+			    	        android:paddingLeft="10dip"/>
+	    	       
+	    	    
+				<ToggleButton
+				    android:id="@+id/toggleGeolocation"
+				    android:layout_height="wrap_content"
+				    android:layout_width="wrap_content"
+				    android:textOn="@string/geolocationButtonTurnOff"
+				    android:textOff="@string/geolocationButtonTurnOn"
+				    android:checked="false"
+					android:onClick="onServiceClick"
+					android:visibility="gone"
+	    	        android:paddingLeft="10dip"/>
+				<TextView 
+	    	        android:id="@+id/geolocationServiceStatus"
+	    	        android:layout_width="wrap_content"
+	    	        android:layout_height="wrap_content"
+	    	        android:paddingLeft="10dip"
+	    	        android:textColor="@color/text_green"
+	    	        android:text="@string/geolocationStatusOff"
+	    	        android:visibility="gone"
+	    	        
 	    	        />
 	    	       <!-- </RelativeLayout> -->
+	    	       
 	    	   
 	    	   
 	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content"
 	        android:visibility="gone">
-	    	   <Button
+	    	   <!-- <Button
 						    android:id="@+id/clearTable"
 						    android:layout_height="wrap_content"
 						    android:layout_width="wrap_content"
 						    android:text="Clear"
 						    android:onClick="onClearTableClick"
 						    android:layout_toRightOf="@id/tableInfo"
-			    	        android:paddingLeft="10dip"/>
+			    	        android:paddingLeft="10dip"/> -->
 	    	   <Button
 						    android:id="@+id/createTable"
 						    android:layout_height="wrap_content"
@@ -429,22 +477,7 @@
 				    </RelativeLayout>
 				
     	    
-    	     <TextView 
-   	        	android:layout_width="fill_parent"
-   	        	android:layout_height="wrap_content"
-   	        	android:textColor="@color/text_blue"
-   	        	android:textStyle="bold"
-   	        	android:visibility="gone"
-   	        	android:text="[Motion State]:"/>
-    	   	
-    	   	<TextView 
-   	        	android:id="@+id/motion_state"
-   	        	android:layout_width="fill_parent"
-   	        	android:layout_height="wrap_content"
-   	        	android:visibility="gone"
-   	        	android:text="unknown"
-   	        	android:paddingLeft="10dip"
-    	      />
+    	     
 
     	   	 <TextView 
    	        	android:id="@+id/user_state"
@@ -458,11 +491,34 @@
     	   	 
     	   	 
     	   	 <RelativeLayout android:id="@+id/FrequencyGroupLayout" android:layout_width="fill_parent" android:layout_height="wrap_content"
-    	   	     android:visibility="gone">
+    	   	     android:visibility="invisible">
+				    
+    	   	     <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:id="@+id/TIIIIIIIred"
+   	        	android:layout_below="@id/geolocationServiceStatus"
+   	        	
+   	        	
+   	        	android:text="@string/motionState"/>
+    	   	
+    	   	<TextView 
+   	        	android:id="@+id/motion_state"
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:layout_below="@id/TIIIIIIIred"
+   	        	
+   	        	
+   	        	android:text="unknown"
+   	        	android:paddingLeft="10dip"
+    	      />
     	   	     
     	   	     <TextView 
    	        	android:layout_width="fill_parent"
    	        	android:layout_height="wrap_content"
+   	        	android:layout_below="@id/motion_state"
    	        	
    	        	android:textStyle="bold"
    	        	android:id="@+id/pollFrequencyText"

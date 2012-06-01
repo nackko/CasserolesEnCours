@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">#CasserolesEnCours</string>
-    <string name="version">*vbeta5*</string>
-    <string name="app_author">**by @F8Full**</string>
+    <string name="version">*v0.1*</string>
+    <string name="app_author">**by @F8Full @[YOU]\r\nhttps://github.com/f8full/CasserolesEnCours</string>
     <string name="regmailcommunified">Your table is now common good. You can change this setting in your Google drive or directly by taping \'unregister\'</string>
     <string name="regmailnotcommunified">Your table was already common good.</string>
     <string name="regmailsign">\r\nF.\r\n--\r\nLife is a { } game.</string>
@@ -11,7 +11,21 @@
     <string name="timecoloredchkbox">Time colored...</string>
     <string name="relativetimechkbox">...in real time</string>
     
-    <string name="registrationStatus">Registration status :</string>
+    <string name="geolocationStatusText">Geolocation status :</string>
+    <string name="geolocationStatusRegRequired">Anonymisation required. (Re)Tap anonymize to begin.</string>
+    <string name="geolocationButtonAnonymize">Anonymize</string>
+    <string name="geolocationButtonAnonymizeRefresh">Check</string>
+    <string name="geolocationAnonymizePending">Request registered and pending. Tap Check to refresh status</string>
+    <string name="geolocationAnonymizeProcessed">Request processed. You are now ready to contribute by turning on geolocation. Thks !</string>
+    <string name="geolocationWarning">Live upload. Thanks :) REMEMBER TO TURN OFF GEOLOCATION !!</string>
+    
+    <string name="geolocationStatusOff">Geolocation : OFF.</string>
+    <string name="geolocationStatusOn">Geolocation : ON. Live upload. Thanks :) REMEMBER TO TURN OFF GEOLOCATION !!</string>
+    <string name="geolocationButtonTurnOn">Turn on</string>
+    <string name="geolocationButtonTurnOff">Turn off</string>
+    
+    
+    
     <string name="tableStatusNoTable">No table - Tap Create to begin.</string>
     <string name="tableStatusPrivate">Private - Unregistered. tap register to request.</string>
     <string name="tableStatusPrivatePending">Private - Unregistered. Registration pending</string>
@@ -29,19 +43,23 @@
     
     <string name="viewTimeFilterPrompt">Less than</string>
     <string name="viewDistanceFilterPrompt">Closest than</string>
-    <string name="viewDistanceFilterGeolocationOff">- N/A Geolocation is off</string> 
+    <string name="viewDistanceFilterGeolocationOff">- N/A Geolocation is off</string>
+    
+    <string name="regNotProcessed">Not registered yet... won\'t be long ;)</string>
     
     
     <string name="myDataOnly">My data</string>
     
     <string name="viewThatMap">View that map</string>
     <string name="see">[VISUALIZE] See the map:</string>
-    <string name="participate">[PARTICIPATE] Help create the map:***TO COME v0.1***</string>
+    <string name="participate">[CONTRIBUTE] Help create the map:</string>
     
-    <string name="anonimizeRequired">Anonymization required to participate. Tap Anonymize to begin.</string>
+    <string name="anonimizeRequired">Anonymization required to participate. (Re)Tap Anonymize to begin.</string>
     
     <string name="nbRecordsMaxText">max icons</string>
-    <string name="locationFilterError">Waiting for location... location filter ignored.</string>
+    <string name="locationFilterError">Waiting for location... location filter ignored. Press back to retry.</string>
+    <string name="nullocationErrorMessage">Waiting for location... thks to wait a bit ;)</string>
+    <string name="motionState">State:</string>
     
     
     

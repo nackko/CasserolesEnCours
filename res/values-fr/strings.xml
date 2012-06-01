@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_author">**par @F8Full**</string>
+    <string name="app_author">**par @F8Full @[VOUS]\r\nhttps://github.com/f8full/CasserolesEnCours</string>
     <string name="regmailcommunified">Votre table est maintenant un bien public. Vous pouvez controller ce réglage dans votre espace Google Drive où en cliquant \'désenregistrer\'.</string>
     <string name="regmailnotcommunified">Votre table était déja un bien public.</string>
     <string name="regmailbody">L\'envoi de ce courriel fera apparaître votre contribution dans le répertoire global. Votre adresse courrielle ne sera pas conservée. Merci de votre apport !</string>
@@ -8,7 +8,18 @@
     <string name="timecoloredchkbox">Chronocoloré</string>
     <string name="relativetimechkbox">...en temps réel</string>
     
-    <string name="registrationStatus">Statut de publication :</string>
+    <string name="geolocationStatusText">État de la géolocalisation:</string>
+    <string name="geolocationStatusRegRequired">Anonymisation requise. (Ré)Appuyer sur anonymiser pour commencer</string>
+    <string name="geolocationButtonAnonymize">Anonymiser</string>
+    <string name="geolocationButtonAnonymizeRefresh">Vérifier</string>
+    <string name="geolocationAnonymizePending">Requête enregistrée en attente. Bouton Vérifier pour rafraîchir.</string>
+    <string name="geolocationAnonymizeProcessed">Requête traitée. Vous êtres prêt à contribuer en allumant la géolocalisation. Merci !</string>
+    
+    
+    <string name="geolocationStatusOff">Géolocalisation : OFF.</string>
+    <string name="geolocationStatusOn">Géolocalisation : ON. Téléversement en direct. Merci :) PENSEZ À ÉTEINDRE LA GÉOLOCALISATION !!</string>
+    <string name="geolocationButtonTurnOn">Allumer</string>
+    <string name="geolocationButtonTurnOff">Éteindre</string>
     
     <string name="tableStatusNoTable">Pas de table - Sélectionnez create pour commencer.</string>
     <string name="tableStatusPrivate">Privée - non enregistrée.  Appuyez sur Register pour commencer</string>
@@ -29,18 +40,21 @@
     <string name="viewTimeFilterPrompt">Plus récent que</string>
     <string name="viewDistanceFilterPrompt">Plus proche que</string>
     <string name="viewDistanceFilterGeolocationOff">- N/A Géolocalisation est off</string>
-    <string name="locationFilterError">En attente de localisation... filtre ignoré.</string>
+    <string name="locationFilterError">En attente de localisation... filtre ignoré. Retour pour réessayer</string>
+    <string name="nullocationErrorMessage">En attente de localisation... merci de patienter un peu ;)</string>
     
     <string name="myDataOnly">Mes données</string>
     
     <string name="viewThatMap">Voir cette carte</string>
     
     <string name="see">[VISUALISER]Voir la carte:</string>
-    <string name="participate">[PARTICIPER]Aidez à créer la carte:***A VENIR v0.1***</string>
+    <string name="participate">[CONTRIBUER]Aidez à créer la carte:</string>
     
-    <string name="anonimizeRequired">Anonymisez vous pour participer. Appuyez sur Anonymiser pour commencer.</string>
+    <string name="anonimizeRequired">Anonymisez vous pour participer. (Re)Appuyer sur Anonymiser pour commencer.</string>
+    <string name="regNotProcessed">Pas encore enregistré... ce sera pas long ;)</string>
     
     <string name="nbRecordsMaxText">icônes max</string>
+    <string name="motionState">État:</string>
     
     
     
