@@ -1696,14 +1696,14 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
-	@Override
+	/*@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		menu.add(0, MENU_FLUSH, 0, "flush");
 		menu.add(0, MENU_EXIT, 0, "Exit");
 		menu.add(0, MENU_FLUSHSQL, 0, "Flush SQL");
 
 		return super.onCreateOptionsMenu(menu);
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
