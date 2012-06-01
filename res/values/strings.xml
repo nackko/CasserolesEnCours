@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CasserolesEnCours</string>
-    <string name="version">beta</string>
+    <string name="app_name">#CasserolesEnCours</string>
+    <string name="version">*vbeta5*</string>
+    <string name="app_author">**by @F8Full**</string>
     <string name="regmailcommunified">Your table is now common good. You can change this setting in your Google drive or directly by taping \'unregister\'</string>
     <string name="regmailnotcommunified">Your table was already common good.</string>
     <string name="regmailsign">\r\nF.\r\n--\r\nLife is a { } game.</string>
@@ -25,6 +26,24 @@
     
     <string name="regTableReqRegisteredTextStart">Registered request pending. Button </string>
     <string name="regTableReqRegisteredTextEnd">to refresh.</string>
+    
+    <string name="viewTimeFilterPrompt">Less than</string>
+    <string name="viewDistanceFilterPrompt">Closest than</string>
+    <string name="viewDistanceFilterGeolocationOff">- N/A Geolocation is off</string> 
+    
+    
+    <string name="myDataOnly">My data</string>
+    
+    <string name="viewThatMap">View that map</string>
+    <string name="see">[VISUALIZE] See the map:</string>
+    <string name="participate">[PARTICIPATE] Help create the map:***TO COME v0.1***</string>
+    
+    <string name="anonimizeRequired">Anonymization required to participate. Tap Anonymize to begin.</string>
+    
+    <string name="nbRecordsMaxText">max icons</string>
+    <string name="locationFilterError">Waiting for location... location filter ignored.</string>
+    
+    
     
     
 </resources>

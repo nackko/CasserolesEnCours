@@ -1,0 +1,28 @@
+<resources
+        >
+
+   <string-array
+      name="timeFilter_choices">
+      <item>--</item>
+      <item>5min</item>
+      <item>15min</item>
+      <item>45min</item>
+      <item>2h</item>
+      
+   </string-array>
+   
+   <string-array
+      name="distanceFilter_choices">
+      <item>--</item>
+      <item>100m</item>
+      <item>300m</item>
+      <item>500m</item>
+      <item>1km</item>
+      <item>20km</item>
+      
+   </string-array>
+
+  
+
+    
+</resources>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CasserolesEnCours</string>
-    <string name="version">beta</string>
+    <string name="app_author">**par @F8Full**</string>
     <string name="regmailcommunified">Votre table est maintenant un bien public. Vous pouvez controller ce réglage dans votre espace Google Drive où en cliquant \'désenregistrer\'.</string>
     <string name="regmailnotcommunified">Votre table était déja un bien public.</string>
     <string name="regmailbody">L\'envoi de ce courriel fera apparaître votre contribution dans le répertoire global. Votre adresse courrielle ne sera pas conservée. Merci de votre apport !</string>
@@ -25,6 +24,26 @@
     
     <string name="regTableReqRegisteredTextStart">Requête enregistrée en attente. Bouton</string>
     <string name="regTableReqRegisteredTextEnd">pour vérifier.</string>
+    
+    
+    <string name="viewTimeFilterPrompt">Plus récent que</string>
+    <string name="viewDistanceFilterPrompt">Plus proche que</string>
+    <string name="viewDistanceFilterGeolocationOff">- N/A Géolocalisation est off</string>
+    <string name="locationFilterError">En attente de localisation... filtre ignoré.</string>
+    
+    <string name="myDataOnly">Mes données</string>
+    
+    <string name="viewThatMap">Voir cette carte</string>
+    
+    <string name="see">[VISUALISER]Voir la carte:</string>
+    <string name="participate">[PARTICIPER]Aidez à créer la carte:***A VENIR v0.1***</string>
+    
+    <string name="anonimizeRequired">Anonymisez vous pour participer. Appuyez sur Anonymiser pour commencer.</string>
+    
+    <string name="nbRecordsMaxText">icônes max</string>
+    
+    
+    
     
     
     

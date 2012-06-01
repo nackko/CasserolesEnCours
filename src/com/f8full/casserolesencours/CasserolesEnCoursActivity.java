@@ -42,6 +42,7 @@ import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -63,10 +64,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -186,6 +189,12 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	GoogleClient mGOOGClient;// = new GoogleClient(mNetHttpTransport, mJaksonJSONFactory, SERVICE_URL);
 	private TextView mPollFrequencyText;
+	
+	private Spinner mTimeFilterSpinner;
+	private Spinner mDistanceFilterSpinner;
+	
+	private ArrayAdapter<CharSequence> mTimeFilterAdapter;
+	private ArrayAdapter<CharSequence> mDistanceFilterAdapter;
 
 	/** Logging level for HTTP requests/responses. */
 	private static final Level LOGGING_LEVEL = Level.ALL;
@@ -200,6 +209,19 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 		//That ease dev of technical stuff BUT is not wanted on a mid/longer term
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
+		mTimeFilterSpinner = (Spinner) findViewById(R.id.timeFilterSpinner);		
+		mTimeFilterAdapter = ArrayAdapter.createFromResource(this, R.array.timeFilter_choices, android.R.layout.simple_spinner_item);
+		mTimeFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		mTimeFilterSpinner.setAdapter(mTimeFilterAdapter);
+		
+		mDistanceFilterSpinner = (Spinner) findViewById(R.id.distanceFilterSpinner);		
+		mDistanceFilterAdapter = ArrayAdapter.createFromResource(this, R.array.distanceFilter_choices, android.R.layout.simple_spinner_item);
+		mDistanceFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		mDistanceFilterSpinner.setAdapter(mDistanceFilterAdapter);
+
 
 		mAloharAuthLayout = findViewById(R.id.auth_layout);
 		mMainLayout = findViewById(R.id.main_layout);
@@ -229,6 +251,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		mPrefs = getSharedPreferences(PREF_NAME,MODE_PRIVATE);
 
 		mAloharUid = mPrefs.getString(PREF_KEY, null);
+		if(mAloharUid==null)
+		{
+			mAlohar.register(APP_ID, API_KEY, this);
+		}
+		
 		mFusionTableEncID = mPrefs.getString(PREF_TABLE_ENCID, null);
 		
 		mRegisterRequestTableID = mPrefs.getString(PREF_REGREQUESTTABLE_ENCID, null);
@@ -318,8 +345,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 				startTaskForId(checkedId, true);    
 			}
-		});         
-
+		}); 
+		
 		findViewById(R.id.frequency0).setEnabled(false);
 		findViewById(R.id.frequency1).setEnabled(false);
 		findViewById(R.id.frequency2).setEnabled(false);
@@ -477,8 +504,103 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	public void onViewerModeClick(View view)
 	{
+		//TODO: View only my data on the map
+		/*if(mViewOnMasterID == null)
+		{
+			toastMessage(getString(R.string.anonimizeRequired));
+				return;
+		}*/
+		
+		
+		
+		String timeFilter =	((Spinner)findViewById(R.id.timeFilterSpinner)).getSelectedItem().toString();
+		String distanceFilter =	((Spinner)findViewById(R.id.distanceFilterSpinner)).getSelectedItem().toString();
+		
+		String whereClause = "";
+		boolean isFiltered = false;
+		
+		if(timeFilter.equals("--")== false)
+			//time filtering requested by user
+		{
+			Calendar cl = Calendar.getInstance();
+			cl.setTime(new Date());
+			switch(((Spinner)findViewById(R.id.timeFilterSpinner)).getSelectedItemPosition())
+			{
+			case 1:
+				cl.add(Calendar.MINUTE, -5);
+				break;
+			case 2:
+				cl.add(Calendar.MINUTE, -15);
+				break;
+			case 3:
+				cl.add(Calendar.MINUTE, -45);
+				break;
+			case 4:
+				cl.add(Calendar.HOUR, -2);
+				break;
+			}
+			
+			whereClause += "WHERE Date>='" + DateFormat.getDateTimeInstance().format(cl.getTime()) + "' ";
+		}
+		
+		if(distanceFilter.equals("--")== false)
+			//time filtering requested by user
+		{
+			if(mAlohar.getPlaceManager().getCurrentLocation().getLatitude() == 0.0 || mAlohar.getPlaceManager().getCurrentLocation().getLongitude() == 0.0)
+			{
+				//Location not available
+				toastMessage(getString(R.string.locationFilterError));
+			}
+			else
+			{
+				if(whereClause.isEmpty() == false)
+				{
+					whereClause += "AND ";
+				}
+				else
+				{
+					whereClause += "WHERE ";
+				}	
+				
+				String WhereClauseDistanceFilter = "";
+				
+				switch(((Spinner)findViewById(R.id.distanceFilterSpinner)).getSelectedItemPosition())
+				{
+				case 1:
+					WhereClauseDistanceFilter = "100";
+					break;
+				case 2:
+					WhereClauseDistanceFilter = "300";
+					break;
+				case 3:
+					WhereClauseDistanceFilter = "500";
+					break;
+				case 4:
+					WhereClauseDistanceFilter = "1000";
+					break;
+				case 5:
+					WhereClauseDistanceFilter = "20000";
+					break;
+				}
+				
+				//WHERE Pharmacy='yes' AND 
+				whereClause += "ST_INTERSECTS(Location, CIRCLE(LATLNG(" 
+							+ Double.toString(mAlohar.getPlaceManager().getCurrentLocation().getLatitude())
+							+ ","
+							+ Double.toString(mAlohar.getPlaceManager().getCurrentLocation().getLongitude())
+						    + "),"
+						    + WhereClauseDistanceFilter
+						    + ")) ";
+						//37.3242,-121.9806),5000))"
+			}
+		}
+		
 		//excellent, just do a request to grab the locations and pass them around
-		final String SqlQuery = "SELECT Date, Location, Description FROM " + mFusionTableEncID + " ORDER BY Date DESC";
+		//1cmlx9aChHUYTWwYivaZucr7NHNsP_ulvEPX1FoM is master table public view ID
+		final String SqlQuery = "SELECT Date, Location, Description FROM 1cmlx9aChHUYTWwYivaZucr7NHNsP_ulvEPX1FoM " 
+				+ whereClause 
+				+ " ORDER BY Date DESC LIMIT "
+				+ ((EditText)findViewById(R.id.nbIconsMax)).getText();
 
 		new Thread((new Runnable() {
 
@@ -868,7 +990,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						List<String> columns = Arrays.asList(csvLines.get(0));
 						List<String[]> rows = csvLines.subList(1, csvLines.size());
 						
-						if(rows.size() != 2)
+						if(rows.size() != 3 )
 						{
 							toastMessage("Nope, not registered yet :/");
 							
@@ -1029,7 +1151,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 					AtomContent content = AtomContent.forEntry(docDic,data);
 
-					GUrl = new GoogleUrl("https://docs.google.com/feeds/default/private/full/" + regRequestTableIDToShare + "/acl?v=3");
+					GUrl = new GoogleUrl("https://docs.google.com/feeds/default/private/full/" + regRequestTableIDToShare + "/acl?v=3&send-notification-emails=false");
 					HttpRequest requestShare = mGOOGClient.getRequestFactory().buildPostRequest(GUrl, content);
 
 					HttpResponse responseShare = requestShare.execute();
@@ -1376,6 +1498,11 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	private void pushDataToFusionTable(ArrayList<JSONObject> dataList) throws JSONException, HttpResponseException, IOException
 	{
+		if(mViewOnMasterID == null)
+		{
+			toastMessage(getString(R.string.anonimizeRequired));
+				return;
+		}
 		String SqlQuery = "";
 
 
@@ -1383,9 +1510,9 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 		for(int i=0; i<dataList.size(); ++i)
 		{
-			SqlQuery += "INSERT INTO " + mFusionTableEncID + " (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
+			//SqlQuery += "INSERT INTO " + mFusionTableEncID + " (Date, Location, Manual, Description, IsStationary) VALUES ('"//fv#casseroles
 			//TODO : the following request when table is registered, in addition to the one the personal table
-			//SqlQuery += "INSERT INTO " + mViewOnMasterID + " (Date, Location, Manual, Description, IsStationary, RequestTableID) VALUES ('"//fv#casseroles
+			SqlQuery += "INSERT INTO " + mViewOnMasterID + " (Date, Location, Manual, Description, IsStationary, RequestTableID) VALUES ('"//fv#casseroles
 
 
 					+ dataList.get(i).getString("DATE")
@@ -1929,11 +2056,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			}
 		});
 	}
-
-	//	private void writeToSD_CSV(boolean b, String motionStateSwitch) {
-	//		// TODO Auto-generated method stub
-	//		
-	//	}
 
 	/* (non-Javadoc)
 	 * @see com.alohar.user.callback.ALEventListener#handleEvent(com.alohar.user.content.data.ALEvents, java.lang.Object)

@@ -64,28 +64,166 @@
     	    android:orientation="vertical"
     	    android:visibility="gone"
     	    >
+    	   <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content">
+    	       
+    	   <!-- android:layout_below="@id/helmetRadioGroup" -->
+    	   <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_red"
+   	        	android:textStyle="bold"
+   	        	android:text="@string/app_name"
+   	        	android:id="@+id/TitleAppName"
+   	        />
+    	   <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_red"
+   	        	android:textStyle="bold"
+   	        	android:text="@string/version"
+   	        	android:layout_below="@+id/TitleAppName"
+   	        	
+   	        	android:id="@+id/TitleAppVersion"
+   	        />
+    	   <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_red"
+   	        	android:textStyle="bold"
+   	        	android:text="@string/app_author"
+   	        	android:layout_below="@+id/TitleAppVersion"
+   	        	
+   	        	android:id="@+id/TitleAppAuthor"
+   	        />
     	   
-    	    <Button
-						    android:id="@+id/viewerMode"
-						    android:layout_height="wrap_content"
-						    android:layout_width="wrap_content"
-						    android:text="map view"
-						    android:onClick="onViewerModeClick"
-						    
-			    	        android:paddingLeft="10dip"/>
-    	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content">
-    	    <CheckBox
+    	   
+    	   <TextView 
+   	        	android:layout_width="fill_parent"
+   	        	android:layout_height="wrap_content"
+   	        	android:textColor="@color/text_blue"
+   	        	android:textStyle="bold"
+   	        	android:layout_below="@+id/TitleAppAuthor"
+   	        	android:text="@string/see"
+   	        	android:id="@+id/TextViewVisualize"
+   	        />
+    	   
+    	   <TextView
+                    
+                    android:id="@+id/TextViewTime"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/TextViewVisualize"
+                    
+                    android:text="@string/viewTimeFilterPrompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            <!--android:text="@string/share_type"-->
+            
+            <Spinner                    
+                    android:prompt="@string/viewTimeFilterPrompt"
+                    android:layout_below="@id/TextViewTime"
+                 	android:layout_alignParentLeft="true"
+                 	
+                    
+                    android:id="@+id/timeFilterSpinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+            
+            <!-- android:layout_alignParentLeft="true" -->
+            <TextView
+                	android:layout_toRightOf="@+id/TextViewTime"
+                	android:layout_below="@id/TextViewVisualize"
+                    
+                    android:id="@+id/TextViewLocation"
+                    android:paddingLeft="20dip"
+                    
+                    android:text="@string/viewDistanceFilterPrompt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            <TextView
+                	android:layout_toRightOf="@+id/TextViewLocation"
+                	android:layout_below="@id/TextViewVisualize"
+                	android:textColor="@color/text_orange"
+                    
+                                      
+                    android:text="@string/viewDistanceFilterGeolocationOff"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            <!-- android:text="@string/share_type" -->
+            
+            <!-- android:layout_alignParentLeft="true" -->
+            <Spinner
+                    
+                    android:prompt="@string/viewDistanceFilterPrompt"
+                    android:layout_below="@+id/TextViewLocation"
+                    android:layout_toRightOf="@+id/timeFilterSpinner"
+                    android:clickable="false"
+                    
+                    android:id="@+id/distanceFilterSpinner"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content" />
+            <!-- android:layout_below="@+id/viewerMode" -->
+            <EditText android:text="100"
+						android:id="@+id/nbIconsMax"
+						android:layout_width="wrap_content"
+						android:layout_below="@+id/distanceFilterSpinner"
+						android:layout_height="wrap_content"
+						android:selectAllOnFocus="true"
+						android:inputType="number"
+						/>
+            <TextView
+                	android:layout_toRightOf="@+id/nbIconsMax"
+                	android:layout_below="@+id/distanceFilterSpinner"
+                	
+                	
+                    
+                    android:id="@+id/nbIconsMaxText"
+                    
+                    
+                    android:text="@string/nbRecordsMaxText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            <CheckBox
+                    android:id="@+id/myDataCheckbox"
+                    android:layout_toRightOf="@+id/TextViewLocation"
+                    android:layout_below="@+id/distanceFilterSpinner"
+                    android:enabled="false"
+                    
+                    
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    
+                    android:text="@string/myDataOnly" />
+            <CheckBox
                     android:id="@+id/timeColoredCheckbox"
+                    
+                    android:layout_below="@+id/myDataCheckbox"
+                    android:layout_toRightOf="@+id/TextViewLocation"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/timecoloredchkbox" />
     	    <CheckBox
                     android:id="@+id/relativeTimeCheckbox"
+                    
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@+id/timeColoredCheckbox"
+                    android:layout_below="@+id/timeColoredCheckbox"
+                    android:layout_toRightOf="@+id/TextViewLocation"
                     android:enabled="false"
                     android:text="@string/relativetimechkbox" />
+    	   
+    	    <Button
+						    android:id="@+id/viewerMode"
+						    android:layout_height="wrap_content"
+						    android:layout_width="wrap_content"
+						    android:layout_toLeftOf="@+id/relativeTimeCheckbox"
+						    android:layout_below="@+id/timeColoredCheckbox"
+						    android:text="@string/viewThatMap"
+						    android:onClick="onViewerModeClick"
+						    android:layout_alignParentLeft="true"
+						    
+			    	        />
+    	    
+    	    
 
     	    </RelativeLayout>
     	   
@@ -94,7 +232,7 @@
    	        	android:layout_height="wrap_content"
    	        	android:textColor="@color/text_blue"
    	        	android:textStyle="bold"
-   	        	android:text="[Table Info]:"
+   	        	android:text="@string/participate"
    	        />
     	   
 	    	   <TextView 
@@ -104,6 +242,7 @@
 	    	        	android:textColor="@color/text_orange"
 	    	        	android:textStyle="bold"
 		    	        android:paddingLeft="10dip"
+		    	        android:visibility="gone"
 	    	        />
 	    	   <!-- <RelativeLayout android:id="@+id/RelativeLayout020" android:layout_width="fill_parent" android:layout_height="wrap_content"> -->
 	    	       <TextView 
@@ -112,6 +251,7 @@
 	    	        	android:layout_height="wrap_content"
 	    	        	android:paddingLeft="10dip"
 	    	        	android:text="@string/registrationStatus"
+	    	        	android:visibility="gone"
 	    	        />
 	    	       <TextView 
 	    	        	android:id="@+id/tableStatus"
@@ -119,6 +259,7 @@
 	    	        	android:layout_height="wrap_content"
 	    	        	android:layout_toRightOf="@+id/tableStatusText"
 	    	        	android:textStyle="bold"
+	    	        	android:visibility="gone"
 	    	        	
 	    	        	
 	    	        	
@@ -126,7 +267,8 @@
 	    	       <!-- </RelativeLayout> -->
 	    	   
 	    	   
-	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content">
+	    <RelativeLayout android:id="@+id/RelativeLayout010" android:layout_width="fill_parent" android:layout_height="wrap_content"
+	        android:visibility="gone">
 	    	   <Button
 						    android:id="@+id/clearTable"
 						    android:layout_height="wrap_content"
@@ -169,6 +311,7 @@
    	        	android:textColor="@color/text_blue"
    	        	android:textStyle="bold"
    	        	android:text="[Alohar UID]:"
+   	        	android:visibility="gone"
    	        />
     	    	   
     	    <TextView 
@@ -178,6 +321,7 @@
     	        	android:textColor="@color/text_orange"
     	        	android:textStyle="bold"
 	    	        android:paddingLeft="10dip"
+	    	        android:visibility="gone"
     	        />
 
     	     <TextView 
@@ -185,6 +329,7 @@
    	        	android:layout_height="wrap_content"
    	        	android:textColor="@color/text_blue"
    	        	android:textStyle="bold"
+   	        	android:visibility="gone"
    	        	android:text="[Service]:"/>
     	   	
 	    	    <TextView 
@@ -192,6 +337,7 @@
 	    	        android:layout_width="wrap_content"
 	    	        android:layout_height="wrap_content"
 	    	        android:paddingLeft="10dip"
+	    	        android:visibility="gone"
 	    	        />
 	    	    
 				<ToggleButton
@@ -202,9 +348,11 @@
 				    android:textOff="Turn Service On"
 				    android:checked="false"
 					android:onClick="onServiceClick"
+					android:visibility="gone"
 	    	        android:paddingLeft="10dip"/>
 				
-				<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="wrap_content">
+				<RelativeLayout android:id="@+id/RelativeLayout01" android:layout_width="fill_parent" android:layout_height="wrap_content"
+				    android:visibility="gone">
 								
 					<ToggleButton
 					    android:id="@+id/toggleAntiEmeute"
@@ -243,7 +391,8 @@
 					
 				
 				</RelativeLayout>
-				<RelativeLayout android:id="@+id/RelativeLayout03" android:layout_width="fill_parent" android:layout_height="wrap_content">
+				<RelativeLayout android:id="@+id/RelativeLayout03" android:layout_width="fill_parent" android:layout_height="wrap_content"
+				    android:visibility="gone">"
 				<Button
 					    android:id="@+id/spotFusion"
 					    android:layout_height="wrap_content"
@@ -285,12 +434,14 @@
    	        	android:layout_height="wrap_content"
    	        	android:textColor="@color/text_blue"
    	        	android:textStyle="bold"
+   	        	android:visibility="gone"
    	        	android:text="[Motion State]:"/>
     	   	
     	   	<TextView 
    	        	android:id="@+id/motion_state"
    	        	android:layout_width="fill_parent"
    	        	android:layout_height="wrap_content"
+   	        	android:visibility="gone"
    	        	android:text="unknown"
    	        	android:paddingLeft="10dip"
     	      />
@@ -298,6 +449,7 @@
     	   	 <TextView 
    	        	android:id="@+id/user_state"
    	        	android:layout_width="fill_parent"
+   	        	android:visibility="gone"
    	        	android:layout_height="wrap_content"
    	        	android:text=""
    	        	android:paddingLeft="10dip"
@@ -305,7 +457,8 @@
     	   	 
     	   	 
     	   	 
-    	   	 <RelativeLayout android:id="@+id/FrequencyGroupLayout" android:layout_width="fill_parent" android:layout_height="wrap_content">
+    	   	 <RelativeLayout android:id="@+id/FrequencyGroupLayout" android:layout_width="fill_parent" android:layout_height="wrap_content"
+    	   	     android:visibility="gone">
     	   	     
     	   	     <TextView 
    	        	android:layout_width="fill_parent"
