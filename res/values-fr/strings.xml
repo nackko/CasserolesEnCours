@@ -7,6 +7,11 @@
     
     <string name="timecoloredchkbox">Chronocoloré</string>
     <string name="relativetimechkbox">...en temps réel</string>
+    <string name="worldmapchkbx">Mapemonde</string>
+    
+    <string name="lastContributionText">Dernier enregistrement</string>
+    <string name="lastContributionTapHintWorld">Presser pour marquer le plus récent...</string>
+    <string name="lastContributionTapHintLocal">Presser pour naviguer au plus récent...</string>
     
     <string name="geolocationStatusText">État de la géolocalisation:</string>
     <string name="geolocationStatusRegRequired">Anonymisation requise. (Ré)Appuyer sur anonymiser pour commencer</string>

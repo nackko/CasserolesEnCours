@@ -201,7 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/timecoloredchkbox" />
-    	    <CheckBox
+    	    <!-- <CheckBox
                     android:id="@+id/relativeTimeCheckbox"
                     
                     android:layout_width="wrap_content"
@@ -209,7 +209,16 @@
                     android:layout_below="@+id/timeColoredCheckbox"
                     android:layout_toRightOf="@+id/TextViewLocation"
                     android:enabled="false"
-                    android:text="@string/relativetimechkbox" />
+                    android:text="@string/relativetimechkbox" /> -->
+                    <CheckBox
+                    android:id="@+id/worldMapChkBx"
+                    
+                    android:checked="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/timeColoredCheckbox"
+                    android:layout_toRightOf="@+id/TextViewLocation"
+                    android:text="@string/worldmapchkbx" />
     	   
     	    <Button
 						    android:id="@+id/viewerMode"
@@ -332,12 +341,16 @@
 						    android:text="Create"
 						    android:onClick="onCreateTableClick"
 						    android:layout_toRightOf="@+id/clearTable"
+						    
+						    android:clickable="false"
+						    android:visibility="gone"
 			    	        android:paddingLeft="10dip"/>
 	    	   <Button
 						    android:id="@+id/registerTable"
 						    android:layout_height="wrap_content"
 						    android:layout_width="wrap_content"
 						    android:text="Register"
+						    android:visibility="gone"
 						    android:onClick="onRegisterTableClick"
 						    android:layout_toRightOf="@+id/createTable"
 						    
@@ -346,6 +359,7 @@
 						    android:id="@+id/refreshRegistration"
 						    android:layout_height="wrap_content"
 						    android:layout_width="wrap_content"
+						    android:visibility="gone"
 						    android:text="@string/updateRegStatusButtonText"
 						    android:onClick="onRegisterRefreshClick"
 						    android:layout_toRightOf="@+id/registerTable"

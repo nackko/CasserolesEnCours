@@ -3,30 +3,33 @@ package com.f8full.casserolesencours;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
+import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
 
 import com.f8full.casserolesencours.R;
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.os.Bundle;
-import android.widget.LinearLayout;
 
 public class CasserolesEnCoursViewerActivity extends MapActivity  {
 
-	LinearLayout linearLayout;
-	MapView mapView;
+	
+	MapView mMapView;
+	
+	private MapController mMapController;
 
 	List<Overlay> mapOverlays;
+	
+	private MyLocationOverlay mMyLocationOverlay;
+	private CasserolePopupOverlay mLastPopupOverlay;
+	
 	Drawable redPot;
 	Drawable redToBLue0Pot;
 	Drawable redToBLue1Pot;
@@ -38,13 +41,15 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
 	private CasserolesItemizedOverlay itemizedOverlayRedToBlue1;
 	private CasserolesItemizedOverlay itemizedOverlayRedToBlue2;
 	private CasserolesItemizedOverlay itemizedOverlayBlue;
+	
+	private boolean mShowMyLocation;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.viewer);
-
+		
 		ArrayList<String> rowsExtra = getIntent().getStringArrayListExtra("rowsData");
 		if(rowsExtra.size() == 0)
 		{
@@ -52,10 +57,25 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
 		}
 		else
 		{
-			mapView = (MapView) findViewById(R.id.mapview);
-			mapView.setBuiltInZoomControls(true);
+			mMapView = (MapView) findViewById(R.id.mapview);
+			mMapView.setBuiltInZoomControls(true);
+			
+			mMapController = mMapView.getController();
+			
+			mShowMyLocation = getIntent().getBooleanExtra("myLocation", false); 
+			
+			if( mShowMyLocation == true)
+			{
+				//Add the MyLocationOverlay
+				mMyLocationOverlay = new MyLocationOverlay(this, mMapView);
+				mMapController.setZoom(14);
+			}
+			else	//wolrmap, let zoom out
+			{
+				mMapController.setZoom(2); 
+			}
 
-			mapOverlays = mapView.getOverlays();
+			mapOverlays = mMapView.getOverlays();
 			redPot = this.getResources().getDrawable(R.drawable.ic_launcher);
 			itemizedOverlayRed = new CasserolesItemizedOverlay(redPot);
 
@@ -80,7 +100,8 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
 
 			try {
 				//relative time means real time now : pot will turn blue after 30 minutes
-				if(getIntent().getBooleanExtra("relativeTime", false) == true)
+				//DEACTIVATED
+				/*if(getIntent().getBooleanExtra("relativeTime", false) == true)
 				{
 					newestTime = new Date(); //now
 
@@ -91,10 +112,10 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
 					oldestTime = cl.getTime();
 				}
 				else
-				{
+				{*/
 					newestTime = DateFormat.getDateTimeInstance().parse(rowsExtra.get(0).split("\\|")[0]);
 					oldestTime = DateFormat.getDateTimeInstance().parse(rowsExtra.get(rowsExtra.size()-1).split("\\|")[0]);
-				}
+				//} DEACTIVATED
 				
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -150,21 +171,51 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
 
 				}
 			}
-
-			if(itemizedOverlayRed.size() !=0)
-				mapOverlays.add(itemizedOverlayRed);
-
+			
+			
+			if(itemizedOverlayBlue.size() !=0)
+				mapOverlays.add(itemizedOverlayBlue);
+			
+			if(itemizedOverlayRedToBlue2.size() !=0)
+				mapOverlays.add(itemizedOverlayRedToBlue2);
+			
+			if(itemizedOverlayRedToBlue1.size() !=0)
+				mapOverlays.add(itemizedOverlayRedToBlue1);
+			
 			if(itemizedOverlayRedToBlue0.size() !=0)
 				mapOverlays.add(itemizedOverlayRedToBlue0);
 
-			if(itemizedOverlayRedToBlue1.size() !=0)
-				mapOverlays.add(itemizedOverlayRedToBlue1);
+			if(itemizedOverlayRed.size() !=0)
+				mapOverlays.add(itemizedOverlayRed);
+			
+			//Newest location extraction;
+			String newestLocRow = rowsExtra.get(0);
+			String[] newestLocCells = newestLocRow.split("\\|");
 
-			if(itemizedOverlayRedToBlue2.size() !=0)
-				mapOverlays.add(itemizedOverlayRedToBlue2);
-
-			if(itemizedOverlayBlue.size() !=0)
-				mapOverlays.add(itemizedOverlayBlue);
+			//Location is in second element in the forme of 'Lat Long'
+			String[] newestlatLong = newestLocCells[1].split(" ");   
+			
+			GeoPoint LastestLocpoint = new GeoPoint((int)(Double.parseDouble(newestlatLong[0])*1e6),(int)(Double.parseDouble(newestlatLong[1])*1e6));
+			
+			mLastPopupOverlay = new CasserolePopupOverlay(mShowMyLocation);
+			
+			mLastPopupOverlay.setPosPoint(LastestLocpoint);
+			mLastPopupOverlay.setLastRecordDate(newestTime);
+			
+			mapOverlays.add(mLastPopupOverlay);
+			
+			if( mShowMyLocation == true)
+			{			
+				mapOverlays.add(mMyLocationOverlay);
+				
+				mMyLocationOverlay.enableMyLocation();
+				
+				mMyLocationOverlay.runOnFirstFix(new Runnable() {
+				       public void run() {
+				    	   mMapController.animateTo(mMyLocationOverlay.getMyLocation());
+				       }
+				    });
+			}
 		}      
 	}
 
@@ -176,13 +227,28 @@ public class CasserolesEnCoursViewerActivity extends MapActivity  {
 		double valueScaled = (double)(value - leftMin) / (double)(leftSpan);
 		return (int)(rightMin + (valueScaled * rightSpan));    	
 	}
+	
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    if( mShowMyLocation == true)
+		{
+	    	mMyLocationOverlay.enableMyLocation();
+		}
+	}
+	 
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    if( mShowMyLocation == true)
+		{
+	    	mMyLocationOverlay.disableMyLocation();
+		}
+	}
 
 	@Override
 	protected boolean isRouteDisplayed() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-
-
-
 }

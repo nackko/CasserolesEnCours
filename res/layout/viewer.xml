@@ -10,8 +10,18 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="true"
+        
         android:apiKey="0JyGZQYTa37GTHEzXugiVxv8Hweyxc2H6o4kPlw"
+        
         />
+        <!-- Debug key, I have to find a way to better handle that -->
+    	<!-- android:apiKey="0JyGZQYTa37GTHEzXugiVxv8Hweyxc2H6o4kPlw" -->
+        <!-- Debug key, I have to find a way to better handle that -->
+        
+        
+        
+        <!-- Release key, I have to find a way to better handle that -->
         <!-- android:apiKey="0JyGZQYTa37EazTXhCXApGmO-KcMLVh1OTvEaEg" -->
+        <!-- Release key, I have to find a way to better handle that -->
         
 </RelativeLayout>

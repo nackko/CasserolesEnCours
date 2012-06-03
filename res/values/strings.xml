@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">#CasserolesEnCours</string>
-    <string name="version">*v0.1*</string>
+    <string name="version">*v0.2*</string>
     <string name="app_author">**by @F8Full @[YOU]\r\nhttps://github.com/f8full/CasserolesEnCours</string>
     <string name="regmailcommunified">Your table is now common good. You can change this setting in your Google drive or directly by taping \'unregister\'</string>
     <string name="regmailnotcommunified">Your table was already common good.</string>
     <string name="regmailsign">\r\nF.\r\n--\r\nLife is a { } game.</string>
     <string name="regmailbody">Sending this mail will make your contribution available in the global repository. Your mail won\'t be stored. Thanks !</string>
     
-    <string name="timecoloredchkbox">Time colored...</string>
+    <string name="timecoloredchkbox">Time colored</string>
     <string name="relativetimechkbox">...in real time</string>
+    <string name="worldmapchkbx">Worldmap</string>
+    
+    <string name="lastContributionText">Latest filtered record</string>
+    <string name="lastContributionTapHintWorld">Tap to highlight last record...</string>
+    <string name="lastContributionTapHintLocal">Tap to navigate to last record...</string>
     
     <string name="geolocationStatusText">Geolocation status :</string>
     <string name="geolocationStatusRegRequired">Anonymisation required. (Re)Tap anonymize to begin.</string>

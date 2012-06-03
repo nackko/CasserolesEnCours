@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/infoPopup"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ic_infopopup"
+    android:orientation="vertical"
+    android:paddingLeft="20dip"
+    android:paddingTop="5dip"
+    android:paddingRight="20dip"
+    android:baselineAligned="false" >
+
+    <TextView
+        android:id="@+id/lastRecordTimePopupText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/lastContributionText"
+        android:textColor="@color/text_title_blue"
+            
+        android:textSize="16dip" />
+    
+    <TextView
+        android:id="@+id/lastRecordTimePopupValue"
+        android:layout_width="wrap_content"
+    	android:layout_height="wrap_content"
+        
+        android:textColor="@color/text_red"
+        android:textSize="16dip" />
+     
+</LinearLayout>

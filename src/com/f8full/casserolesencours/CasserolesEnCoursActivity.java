@@ -37,7 +37,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -55,13 +54,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -84,7 +80,6 @@ import com.alohar.user.content.data.ALEvents;
 import com.alohar.user.content.data.MotionState;
 //import com.alohar.user.content.data.UserStay;
 import com.f8full.casserolesencours.R;
-import com.google.android.maps.GeoPoint;
 import com.google.api.client.auth.oauth2.AuthorizationCodeTokenRequest;
 import com.google.api.client.auth.oauth2.ClientParametersAuthentication;
 import com.google.api.client.auth.oauth2.TokenResponse;
@@ -93,20 +88,16 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.extensions.android2.auth.GoogleAccountManager;
 import com.google.api.client.googleapis.services.GoogleClient;
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpHeaders;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.http.HttpResponseException;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.http.json.JsonHttpContent;
-import com.google.api.client.http.xml.XmlHttpContent;
 import com.google.api.client.http.xml.atom.AtomContent;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.api.client.util.GenericData;
-import com.google.api.client.util.Key;
 import com.google.api.client.xml.XmlNamespaceDictionary;
 
 /*import com.google.api.client.googleapis.services.GoogleClient;
@@ -145,6 +136,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	private static final String PREF_TABLE_ENCID = "tableEncID";
 	private static final String PREF_TABLE_STATUS = "tableStatus";
+	
 	private static final String PREF_REGREQUESTTABLE_ENCID = "reqTableID";
 	private static final String PREF_VIEWONMASTERTABLE_ENCID = "viewOnMasterTableID";
 
@@ -636,6 +628,9 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				+ whereClause 
 				+ "ORDER BY Date DESC LIMIT "
 				+ ((EditText)findViewById(R.id.nbIconsMax)).getText();
+		
+		final boolean myLocationEnabled = !(((CheckBox)findViewById(R.id.worldMapChkBx)).isChecked());
+		final boolean timeColored = ((CheckBox)findViewById(R.id.timeColoredCheckbox)).isChecked();
 
 		new Thread((new Runnable() {
 
@@ -692,8 +687,14 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 						Intent mapIntent = new Intent(getApplicationContext(), CasserolesEnCoursViewerActivity.class);
 						mapIntent.putStringArrayListExtra("rowsData", rowData);
-						mapIntent.putExtra("timeColored", ((CheckBox)findViewById(R.id.timeColoredCheckbox)).isChecked());
-						mapIntent.putExtra("relativeTime", ((CheckBox)findViewById(R.id.relativeTimeCheckbox)).isChecked());
+						mapIntent.putExtra("timeColored", timeColored);
+						mapIntent.putExtra("myLocation", myLocationEnabled);
+						
+						if(myLocationEnabled)
+							toastMessage(getString(R.string.lastContributionTapHintLocal));
+						else
+							toastMessage(getString(R.string.lastContributionTapHintWorld));
+						//mapIntent.putExtra("relativeTime", ((CheckBox)findViewById(R.id.relativeTimeCheckbox)).isChecked());
 						startActivity(mapIntent);
 
 
@@ -1058,7 +1059,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			public void run() {
 				try {
 					//Getting view on master table on which the contributor has write access
-					String SqlQuery = "SELECT Date, RequestedViewOnMasterTable_ID FROM " + mRegisterRequestTableID + " ORDER BY Date DESC";
+					String SqlQuery = "SELECT Date, RequestedViewOnMasterTable_ID FROM " + mRegisterRequestTableID + " ORDER BY Date ASC";
 					
 					String encodedQuery = URLEncoder.encode(SqlQuery, "UTF-8");
 
@@ -1083,7 +1084,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						List<String> columns = Arrays.asList(csvLines.get(0));
 						List<String[]> rows = csvLines.subList(1, csvLines.size());
 						
-						if(rows.size() != 3 )
+						if(rows.size() < 3 || rows.size() >= 4  )
 						{
 							toastMessage(getString(R.string.regNotProcessed));
 							
@@ -1628,7 +1629,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 	private void pushDataToFusionTable(ArrayList<JSONObject> dataList) throws JSONException, HttpResponseException, IOException
 	{
-		if(mViewOnMasterID == null)
+		if (mViewOnMasterID == null)
 		{
 			toastMessage(getString(R.string.anonimizeRequired));
 				return;
@@ -1645,9 +1646,10 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			SqlQuery += "INSERT INTO " + mViewOnMasterID + " (Date, Location, Manual, Description, IsStationary, RequestTableID) VALUES ('"//fv#casseroles
 
 
+					
 					+ dataList.get(i).getString("DATE")
 					+ "', '"
-					+ dataList.get(i).getString("LOCATION")
+					+ dataList.get(i).getString("LOCATION")//"45.5334 -73.5838"
 					+ "', '"
 					+ dataList.get(i).getBoolean("MANUAL")
 					+ "', '"
