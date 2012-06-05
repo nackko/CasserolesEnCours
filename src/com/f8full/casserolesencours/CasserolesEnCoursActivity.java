@@ -51,6 +51,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -64,6 +68,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -107,9 +112,6 @@ import com.google.api.services.docs.model.DocumentListEntry;
 import com.google.api.services.docs.model.DocumentListFeed;*/
 
 
-
-//import 
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.livinglabmontreal.AtomCategory;
@@ -144,6 +146,10 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 	public String mRegisterRequestTableID;
 	
 	public String mViewOnMasterID;
+	String NOTIFIACTION_SERVICE_STRING = Context.NOTIFICATION_SERVICE;
+	NotificationManager mNotificationManager;
+	Notification mNotification;
+	
 
 	private ALMotionManager mMotionManager;
 	private boolean mIsStationary=true;
@@ -223,6 +229,8 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		mStatusView = (TextView)findViewById(R.id.service_status);
 		mServiceToggleButton = (ToggleButton)findViewById(R.id.toggle);
 		mUIDView = (EditText)findViewById(R.id.uid);
+		
+		mNotificationManager = (NotificationManager) getSystemService(NOTIFIACTION_SERVICE_STRING);
 
 		mAlohar = Alohar.init(getApplication());
 
@@ -356,6 +364,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 
+				cancelActiveTasks();
 				startTaskForId(checkedId, true);    
 			}
 		}); 
@@ -746,6 +755,22 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			findViewById(R.id.FrequencyGroupLayout).setVisibility(View.VISIBLE);
 			mDistanceFilterSpinner.setEnabled(true);
 			
+						
+			//String freq = ((RadioButton)findViewById( ((RadioGroup)findViewById(R.id.pollFrequencyRadioGroup)).getCheckedRadioButtonId() )).getText().toString();
+			String text = getString(R.string.geolocationStatusOnNotification);//String.format(getString(R.string.geolocationOnNotification), freq);
+			int icon = R.drawable.ic_launcher;
+			CharSequence tickerText = text;
+			
+			long when = System.currentTimeMillis();
+			
+			mNotification = new Notification(icon, tickerText, when);
+			mNotification.flags |= Notification.FLAG_ONGOING_EVENT;
+			CharSequence contentText = getString(R.string.geolocationOnNotificationNoFreq);
+			CharSequence contentTitle = getString(R.string.app_name);
+			Intent notificationIntent = new Intent(this, CasserolesEnCoursActivity.class);
+		    mNotification.contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+		    mNotification.setLatestEventInfo(this, contentTitle, contentText, mNotification.contentIntent);
+		    mNotificationManager.notify(R.layout.main, mNotification);			
 			
 		} else {
 			//turn off
@@ -754,6 +779,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			((TextView)findViewById(R.id.geolocationServiceStatus)).setTextColor(getResources().getColor(R.color.text_green));
 			((TextView)findViewById(R.id.distanceFilterNA)).setVisibility(View.VISIBLE);
 			findViewById(R.id.FrequencyGroupLayout).setVisibility(View.INVISIBLE);
+			mDistanceFilterSpinner.setSelection(0);
 			mDistanceFilterSpinner.setEnabled(false);
 			
 			//((RadioGroup) findViewById(R.id.pollFrequencyRadioGroup)).check(-1);
@@ -761,6 +787,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			mLocationPollThreadExecutor.purge();
 			
 			mIsStationary = true;
+			mNotificationManager.cancel(R.layout.main);
 		}
 	}
 
