@@ -280,12 +280,21 @@
 	    	        	android:visibility="gone"
 	    	        />
 	    	       <Button
+        				android:id="@+id/logWithGoogle"
+        				android:layout_width="wrap_content"
+        				android:layout_height="wrap_content"
+        										    
+			    	    android:paddingLeft="10dip"
+        				android:background="@drawable/loginwithgoogle_button"
+        				android:onClick="onAnonymizeClick"/>
+	    	       <Button
 						    android:id="@+id/registerAnonymize"
 						    android:layout_height="wrap_content"
 						    android:layout_width="wrap_content"
 						    android:text="@string/geolocationButtonAnonymize"
 						    android:onClick="onAnonymizeClick"
-						    android:layout_toRightOf="@+id/createTable"
+						    
+						    android:visibility="gone"
 						    
 			    	        android:paddingLeft="10dip"/>
 	    	       <Button

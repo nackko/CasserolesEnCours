@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">#CasserolesEnCours</string>
-    <string name="version">*v0.2.1*</string>
+    <string name="version">*v0.2.1.1*</string>
     <string name="app_author">**by @F8Full @[YOU]\r\nhttps://github.com/f8full/CasserolesEnCours</string>
     <string name="regmailcommunified">Your table is now common good. You can change this setting in your Google drive or directly by taping \'unregister\'</string>
     <string name="regmailnotcommunified">Your table was already common good.</string>
@@ -17,8 +17,9 @@
     <string name="lastContributionTapHintLocal">Tap to navigate to last record...</string>
     
     <string name="geolocationStatusText">Geolocation status :</string>
-    <string name="geolocationStatusRegRequired">Anonymisation required. (Re)Tap anonymize to begin.</string>
-    <string name="geolocationButtonAnonymize">Anonymize</string>
+    <string name="geolocationStatusRegRequired">Anonymisation required. Allow app to exchange token in your private cloud by tapping\r\nLogin with:</string>
+    <string name="geolocationStatusRegStart">Login OK. Register request in private cloud by taping :</string>
+    <string name="geolocationButtonAnonymize">Exchange token</string>
     <string name="geolocationButtonAnonymizeRefresh">Check</string>
     <string name="geolocationAnonymizePending">Request registered and pending. Tap Check to refresh status</string>
     <string name="geolocationAnonymizeProcessed">Request processed. You are now ready to contribute by turning on geolocation. Thks !</string>

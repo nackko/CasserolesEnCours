@@ -14,8 +14,10 @@
     <string name="lastContributionTapHintLocal">Presser pour naviguer au plus récent...</string>
     
     <string name="geolocationStatusText">État de la géolocalisation:</string>
-    <string name="geolocationStatusRegRequired">Anonymisation requise. (Ré)Appuyer sur anonymiser pour commencer</string>
-    <string name="geolocationButtonAnonymize">Anonymiser</string>
+    <string name="geolocationStatusRegRequired">Anonymisation requise. Autoriser l\'app à échanger des jetons dans votre espace nuagique privé en appuyant sur\r\nLogin avec:</string>
+    <string name="geolocationStatusRegStart">Login OK. Enregistrer une requête dans votre espace nuagique privé en appuyant sur :</string>
+    
+    <string name="geolocationButtonAnonymize">Échanger tokens</string>
     <string name="geolocationButtonAnonymizeRefresh">Vérifier</string>
     <string name="geolocationAnonymizePending">Requête enregistrée en attente. Bouton Vérifier pour rafraîchir.</string>
     <string name="geolocationAnonymizeProcessed">Requête traitée. Vous êtres prêt à contribuer en allumant la géolocalisation. Merci !</string>

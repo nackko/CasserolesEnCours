@@ -63,8 +63,10 @@ public class CasserolePopupOverlay extends Overlay {
 	 
 	        TextView locationNameText = (TextView) mPopupLayout.findViewById(R.id.lastRecordTimePopupValue);
 	         
-	   
-	        locationNameText.setText(DateFormat.getDateTimeInstance().format(mLastRecordDate));
+	        if(mLastRecordDate != null)
+	        	locationNameText.setText(DateFormat.getDateTimeInstance().format(mLastRecordDate));
+	        else
+	        	locationNameText.setText("error retrieving date");
 	 
 	        // Add the view to the Map
 	        mapView.addView(mPopupLayout);

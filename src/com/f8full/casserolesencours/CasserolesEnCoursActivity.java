@@ -321,6 +321,13 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				findViewById(R.id.geolocationServiceStatus).setVisibility(View.VISIBLE);
 				findViewById(R.id.myDataCheckbox).setEnabled(true);
 			}
+			else if(tableStatus.equals(getString(R.string.geolocationStatusRegStart)))
+			{
+				findViewById(R.id.logWithGoogle).setVisibility(View.GONE);
+				findViewById(R.id.registerAnonymize).setVisibility(View.VISIBLE);
+				((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_orange));
+				((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationStatusRegStart));
+			}
 		}
 		
 		((TextView)findViewById(R.id.tableStatus)).setText(tableStatus);	
@@ -423,7 +430,19 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 							.setRedirectUri(OAuth2ClientCredentials.REDIRECT_URI)
 							.setScopes(OAuth2ClientCredentials.SCOPE)
 							.setClientAuthentication(new ClientParametersAuthentication(OAuth2ClientCredentials.CLIENT_ID, OAuth2ClientCredentials.CLIENT_SECRET))
-							.execute();						
+							.execute();			
+							
+							mMainHandler.post(new Runnable() {
+
+								public void run() {
+									
+									findViewById(R.id.logWithGoogle).setVisibility(View.GONE);
+									findViewById(R.id.registerAnonymize).setVisibility(View.VISIBLE);
+									((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_orange));
+									((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationStatusRegStart));
+									setTableStatus(getString(R.string.geolocationStatusRegStart));
+								}
+							});
 
 
 							setRefreshToken(accessTokenResponse.getRefreshToken());
@@ -1299,11 +1318,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 								
 								((Button)findViewById(R.id.registerAnonymize)).setVisibility(View.GONE);
 								((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.VISIBLE);
-								
-								
-								
-								//((Button)findViewById(R.id.refreshRegistration)).setEnabled(true);
-								//((Button)findViewById(R.id.registerTable)).setEnabled(false);
 							}
 						});	   
 
