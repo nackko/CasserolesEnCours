@@ -177,7 +177,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 
 	GoogleCredential mGOOGCredential;// = new GoogleCredential();
-	GoogleAccountManager mGOOGAccountManager;
 
 	HttpTransport mNetHttpTransport = new NetHttpTransport();
 	JsonFactory mJaksonJSONFactory = new JacksonFactory();
@@ -350,7 +349,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 		mGOOGCredential.setRefreshToken(mPrefs.getString(PREF_REFRESH_TOKEN, null));
 
 		//Logger.getLogger("com.google.api.client").setLevel(LOGGING_LEVEL);
-		mGOOGAccountManager = new GoogleAccountManager(this);
 
 		Builder truc = GoogleClient.builder(mNetHttpTransport, mJaksonJSONFactory, new GenericUrl(SERVICE_URL));
 		truc.setHttpRequestInitializer(mGOOGCredential);
@@ -734,7 +732,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				{
 					if (e.getStatusCode() == 401) 
 					{
-						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 						mGOOGCredential.setAccessToken(null);
 
 						SharedPreferences.Editor editor2 = mPrefs.edit();
@@ -941,7 +938,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				{
 					if (e.getStatusCode() == 401) 
 					{
-						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 						mGOOGCredential.setAccessToken(null);
 
 						SharedPreferences.Editor editor2 = mPrefs.edit();
@@ -1028,7 +1024,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				{
 					if (e.getStatusCode() == 401) 
 					{
-						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 						mGOOGCredential.setAccessToken(null);
 
 						SharedPreferences.Editor editor2 = mPrefs.edit();
@@ -1069,7 +1064,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				{
 					if (e.getStatusCode() == 401) 
 					{
-						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 						mGOOGCredential.setAccessToken(null);
 
 						SharedPreferences.Editor editor2 = mPrefs.edit();
@@ -1175,7 +1169,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				{
 					if (e.getStatusCode() == 401) 
 					{
-						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 						mGOOGCredential.setAccessToken(null);
 
 						SharedPreferences.Editor editor2 = mPrefs.edit();
@@ -1587,7 +1580,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 
 		} catch (HttpResponseException e) {
 			if (e.getStatusCode() == 401) {
-				mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 				mGOOGCredential.setAccessToken(null);
 
 				SharedPreferences.Editor editor2 = mPrefs.edit();
@@ -1980,7 +1972,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 					pushDataToFusionTable(dataList);
 				} catch (HttpResponseException e) {
 					if (e.getStatusCode() == 401) {
-						mGOOGAccountManager.invalidateAuthToken(mGOOGCredential.getAccessToken());
 						mGOOGCredential.setAccessToken(null);
 
 						SharedPreferences.Editor editor2 = mPrefs.edit();
