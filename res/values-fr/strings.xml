@@ -57,8 +57,8 @@
     
     <string name="viewThatMap">Voir cette carte</string>
     
-    <string name="see">[VISUALISER]Voir la carte:</string>
-    <string name="participate">[CONTRIBUER]Aidez à créer la carte:</string>
+    <string name="see">[VISUALISER]Voir la carte (pas d\'authentification requise):</string>
+    <string name="participate">[CONTRIBUER]Aidez à créer la carte (authentification requise):</string>
     
     <string name="anonimizeRequired">Anonymisez vous pour participer. (Re)Appuyer sur Anonymiser pour commencer.</string>
     <string name="regNotProcessed">Pas encore enregistré... ce sera pas long ;)</string>

@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -55,20 +56,10 @@ public class OAuth2AccessTokenActivity extends Activity {
 	//private SharedPreferences prefs;
 	//static final String PREF_AUTH_TOKEN = "authToken";
 
-//	@Override
-//	public void onCreate(Bundle savedInstanceState) {
-//		super.onCreate(savedInstanceState);
-//        Log.i(TAG, "Starting task to retrieve request token.");
-//        this.prefs = getSharedPreferences(CobraDemoActivity.PREF_NAME,MODE_PRIVATE);
-//        
-//        
-//        //new OAuthRequestTokenTask(this).execute();
-//	}
-
-	
 	@Override
-	protected void onResume() {
-		super.onResume();
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		
 		WebView webview = new WebView(this);
         webview.getSettings().setJavaScriptEnabled(true);  
         webview.setVisibility(View.VISIBLE);
@@ -124,7 +115,6 @@ public class OAuth2AccessTokenActivity extends Activity {
 			}  
         });  
         
-        webview.loadUrl(authorizationUrl);		
+        webview.loadUrl(authorizationUrl);	
 	}
-
 }
