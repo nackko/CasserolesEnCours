@@ -305,7 +305,6 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				((TextView)findViewById(R.id.geolocationStatus)).setTextColor(getResources().getColor(R.color.text_orange));
 				((TextView)findViewById(R.id.geolocationStatus)).setText(getString(R.string.geolocationAnonymizePending));
 				
-				
 				((Button)findViewById(R.id.registerAnonymize)).setVisibility(View.GONE);
 				((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.VISIBLE);
 			}
@@ -316,6 +315,7 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 				
 				((Button)findViewById(R.id.checkAnonymize)).setVisibility(View.GONE);
 				((Button)findViewById(R.id.registerAnonymize)).setVisibility(View.GONE);
+				((Button)findViewById(R.id.logWithGoogle)).setVisibility(View.GONE);
 				((Button)findViewById(R.id.toggleGeolocation)).setVisibility(View.VISIBLE);
 				findViewById(R.id.geolocationServiceStatus).setVisibility(View.VISIBLE);
 				findViewById(R.id.myDataCheckbox).setEnabled(true);
@@ -1132,10 +1132,19 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 						}
 						else
 						{
-							
-							mViewOnMasterID = rows.get(0)[1];
-							setViewOnMasterTableID(mViewOnMasterID);
-							
+							//hack to select the right row
+							for(String[] curRowContent: rows)
+							{
+								//Ref id for length, this is my current ID 
+								String potentialID = curRowContent[1];
+								if(potentialID.length() == "13WOJlilS1fbwVoO9z1H4bVIqWxcxZJeesZL5qGg".length())
+								{
+									//found ID
+									mViewOnMasterID = potentialID;
+									setViewOnMasterTableID(mViewOnMasterID);
+									break;
+								}
+							}
 							
 							mMainHandler.post(new Runnable() {
 

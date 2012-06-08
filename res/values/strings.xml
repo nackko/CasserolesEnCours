@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">#CasserolesEnCours</string>
-    <string name="version">*v0.2.1.3 -- Boris release*</string>
+    <string name="version">*v0.2.1.4*</string>
     <string name="app_author">**by @F8Full @borisdb @[YOU]\r\nhttps://github.com/f8full/CasserolesEnCours</string>
     <string name="regmailcommunified">Your table is now common good. You can change this setting in your Google drive or directly by taping \'unregister\'</string>
     <string name="regmailnotcommunified">Your table was already common good.</string>
