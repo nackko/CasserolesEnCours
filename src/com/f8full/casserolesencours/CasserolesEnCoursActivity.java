@@ -802,6 +802,10 @@ public class CasserolesEnCoursActivity extends Activity implements ALEventListen
 			cancelActiveTasks();
 			mLocationPollThreadExecutor.purge();
 			
+			//That is a hack, some code path must be missed, I'm tracking a thread leak bug when app is in background for a long time
+			mLocationPollThreadExecutor.shutdown();
+			mLocationPollThreadExecutor = new ScheduledThreadPoolExecutor(20);
+			
 			mIsStationary = true;
 			mNotificationManager.cancel(R.layout.main);
 		}
